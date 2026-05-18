@@ -97,7 +97,7 @@ class ScriptSkill:
         self.storage.save_script(script)
 
         # 验证固定开篇
-        expected_opening = f"Hi guys, it's Ivy. Day {day_number} of my daily English practice. I keep talking to improve my oral English."
+        expected_opening = f"Hi guys, it's Lulu. Day {day_number} of my daily English practice. I keep talking to improve my oral English."
         if not script.english_script.strip().startswith(expected_opening):
             self.console.print("[yellow]⚠ 固定开篇可能被修改，请手动检查[/]\n")
 

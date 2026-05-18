@@ -78,7 +78,7 @@ def classify_intent(text: str) -> Optional[tuple[str, str]]:
 def get_help_text() -> str:
     """返回帮助信息"""
     return """
-[bold cyan]English Oral Practice Agent[/] — AI 口语练习助手
+[bold cyan]Lulu's Daily Mic[/] — 全球化沟通力养成
 
 [bold]📝 脚本生成 (script)[/]
   script generate <URL/主题>   从视频/文章/主题生成口语脚本

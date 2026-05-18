@@ -18,8 +18,8 @@ from skills.script import ScriptSkill
 from skills.material import MaterialSkill
 
 BANNER = """
-[bold cyan]English Oral Practice Agent[/] — AI 口语练习助手
-  📝 脚本生成 · 📚 AI PM 材料 · 🕐 每日练习
+[bold cyan]Lulu's Daily Mic[/] — 全球化沟通力养成
+  🎙️ 每日口播 · 📚 AI PM 材料 · 🕐 定时推送
   Web: [dim]streamlit run web/app.py[/]
 """
 

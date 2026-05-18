@@ -45,47 +45,80 @@ class WebConnector:
     # ─── YouTube 字幕抓取 ──────────────────────────────
 
     def _fetch_youtube(self, url: str) -> ContentResult:
-        """使用 youtube-transcript-api 获取字幕，优先英文"""
+        """使用 youtube-transcript-api 获取字幕，优先英文手动字幕，回退自动生成/翻译"""
         try:
             from youtube_transcript_api import YouTubeTranscriptApi
+            from youtube_transcript_api._errors import (
+                NoTranscriptFound, TranscriptsDisabled, VideoUnavailable
+            )
             video_id = self._extract_youtube_id(url)
             if not video_id:
-                return self._fallback(url, "youtube", "无法解析 YouTube 视频 ID")
+                return self._fallback(url, "youtube", "无法解析 YouTube 视频 ID，请确认链接格式正确")
 
             # 获取可用字幕列表
-            transcript_list = YouTubeTranscriptApi.list_transcripts(video_id)
+            try:
+                transcript_list = YouTubeTranscriptApi.list_transcripts(video_id)
+            except VideoUnavailable:
+                return self._fallback(url, "youtube", "该视频不可用或已被删除")
+            except TranscriptsDisabled:
+                return self._fallback(url, "youtube", "该视频已禁用字幕功能")
 
             transcript = None
+
+            # 优先级 1：手动英文字幕
             try:
-                # 优先手动英文字幕
-                transcript = transcript_list.find_transcript(["en"])
-            except Exception:
+                transcript = transcript_list.find_manually_created_transcript(["en"])
+            except NoTranscriptFound:
+                pass
+
+            # 优先级 2：自动生成英文字幕
+            if transcript is None:
                 try:
-                    # 回退英文自动生成
+                    transcript = transcript_list.find_generated_transcript(["en"])
+                except NoTranscriptFound:
+                    pass
+
+            # 优先级 3：任意英文字幕（含翻译）
+            if transcript is None:
+                try:
                     transcript = transcript_list.find_transcript(["en"])
-                    # 若上面失败则尝试获取任何英文字幕
+                except NoTranscriptFound:
+                    pass
+
+            # 优先级 4：中文字幕翻译成英文
+            if transcript is None:
+                try:
+                    zh_transcript = transcript_list.find_transcript(["zh-Hans", "zh-Hant", "zh"])
+                    transcript = zh_transcript.translate("en")
+                except Exception:
+                    pass
+
+            # 优先级 5：获取任意可用字幕
+            if transcript is None:
+                try:
+                    # 遍历所有可用字幕，取第一个
+                    all_transcripts = list(transcript_list)
+                    if all_transcripts:
+                        first = all_transcripts[0]
+                        # 如果不是英文，尝试翻译
+                        if "en" not in first.language_code:
+                            transcript = first.translate("en")
+                        else:
+                            transcript = first
                 except Exception:
                     pass
 
             if transcript is None:
-                # 尝试获取任何可用字幕，然后翻译成英文
-                try:
-                    available = transcript_list.find_transcript(["zh-Hans", "zh"])
-                    transcript = available.translate("en")
-                except Exception:
-                    try:
-                        transcript = transcript_list.find_transcript([])
-                    except Exception:
-                        pass
-
-            if transcript is None:
-                return self._fallback(url, "youtube", "该视频无可用字幕")
+                return self._fallback(
+                    url, "youtube",
+                    "该视频无可用字幕（可能未上传字幕或仅含硬编码字幕）"
+                )
 
             # 提取字幕文本
             captions = transcript.fetch()
             text = " ".join([c.text for c in captions])
 
-            # 截断过长字幕（保留前 4000 字符，足够生成脚本）
+            # 截断过长字幕（保留前 4000 字符）
             if len(text) > 4000:
                 text = text[:4000] + "..."
 
@@ -98,15 +131,17 @@ class WebConnector:
             )
 
         except Exception as e:
-            return self._fallback(url, "youtube", str(e))
+            return self._fallback(url, "youtube", f"字幕抓取异常: {e}")
 
     def _extract_youtube_id(self, url: str) -> str:
-        """从 YouTube URL 提取视频 ID"""
-        # 支持 youtu.be/VIDEO_ID 和 youtube.com/watch?v=VIDEO_ID
+        """从 YouTube URL 提取视频 ID，支持多种格式"""
         patterns = [
             r"youtu\.be/([a-zA-Z0-9_-]+)",
             r"youtube\.com/watch\?v=([a-zA-Z0-9_-]+)",
             r"youtube\.com/embed/([a-zA-Z0-9_-]+)",
+            r"youtube\.com/shorts/([a-zA-Z0-9_-]+)",
+            r"youtube\.com/live/([a-zA-Z0-9_-]+)",
+            r"youtube\.com/v/([a-zA-Z0-9_-]+)",
         ]
         for p in patterns:
             match = re.search(p, url)

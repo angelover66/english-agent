@@ -22,8 +22,8 @@ from skills.material import MaterialSkill
 # ─── 页面配置 ────────────────────────────────────────
 
 st.set_page_config(
-    page_title="English Practice · Ivy",
-    page_icon="📖",
+    page_title="Lulu's Daily Mic",
+    page_icon="🎙️",
     layout="wide",
     initial_sidebar_state="collapsed",
 )
@@ -66,19 +66,20 @@ st.markdown("""
 /* ── 顶部导航条 ── */
 .top-nav {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem 0 1.5rem;
+    align-items: baseline;
+    justify-content: flex-start;
+    padding: 0.5rem 0 1.25rem;
     border-bottom: 1px solid #E8DFD3;
     margin-bottom: 2rem;
+    gap: 12px;
 }
 .nav-brand {
     display: flex;
-    align-items: center;
+    align-items: baseline;
     gap: 10px;
 }
 .nav-brand .logo {
-    font-size: 1.6rem;
+    font-size: 1.5rem;
     font-family: 'Newsreader', serif;
     font-weight: 600;
     color: var(--ink);
@@ -89,8 +90,7 @@ st.markdown("""
     font-size: 0.82rem;
     color: var(--ink-light);
     font-weight: 400;
-    margin-left: 4px;
-    padding-top: 4px;
+    padding-top: 2px;
 }
 .nav-actions {
     display: flex;
@@ -432,8 +432,8 @@ def render_top_nav():
     st.markdown("""
     <div class="top-nav">
         <div class="nav-brand">
-            <span class="logo">English Practice</span>
-            <span class="subtitle">Ivy's daily speaking journal</span>
+            <span class="logo">Lulu's Daily Mic</span>
+            <span class="subtitle">Finding my voice, building my future.</span>
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -443,7 +443,7 @@ def render_footer():
     """渲染页脚"""
     st.markdown(f"""
     <div class="footer">
-        English Practice Agent · v1.0 · Made for Ivy's learning journey<br>
+        Lulu's Daily Mic · v1.0 · Made for Lulu's learning journey<br>
         {datetime.now().strftime('%Y-%m-%d')}
     </div>
     """, unsafe_allow_html=True)
@@ -490,6 +490,36 @@ def page_script_generator():
         unsafe_allow_html=True
     )
 
+    # ── 快捷主题（放在输入框前面，利用 on_click 提前写入 session_state）──
+    st.markdown(
+        '<div style="font-family:Inter,sans-serif;font-size:0.82rem;'
+        'color:#6B5E4F;margin-bottom:0.5rem;">🎯 Quick topics</div>',
+        unsafe_allow_html=True
+    )
+    topics = [
+        "AI product manager daily work routine",
+        "How to write a good PRD",
+        "Agile vs waterfall for AI teams",
+        "What I learned from a tech podcast today",
+        "Tips for communicating with engineers",
+        "The future of AI agents",
+    ]
+
+    def _on_quick_topic_click(t: str):
+        """在 text_input 控件创建之前写入 session_state，避免控件冲突"""
+        st.session_state.script_input = t
+
+    cols = st.columns(3)
+    for i, topic in enumerate(topics):
+        with cols[i % 3]:
+            st.button(
+                topic, key=f"qt_{i}", use_container_width=True,
+                on_click=_on_quick_topic_click, args=(topic,),
+            )
+
+    st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
+
+    # ── 输入区域 ──
     col1, col2 = st.columns([5, 1])
     with col1:
         user_input = st.text_input(
@@ -511,6 +541,17 @@ def page_script_generator():
     if generate_btn and user_input.strip():
         with st.spinner("Fetching content..."):
             content = script_skill.connector.fetch(user_input.strip())
+
+        # 检测是否为 fallback 结果（内容抓取失败）
+        is_fallback = content.metadata.get("fallback_reason") if content.metadata else False
+        if is_fallback:
+            st.error(f"❌ 内容抓取失败：{content.metadata['fallback_reason']}")
+            st.info(
+                "YouTube 视频可能没有字幕，或该网页无法提取正文。"
+                "请尝试直接输入主题关键词来生成脚本，或者换一个视频链接试试。"
+            )
+            render_footer()
+            return
 
         with st.spinner(f"Generating Day {script_skill.storage.get_next_day_number()} script..."):
             prompt = script_skill._load_prompt("script_generator.txt")
@@ -546,7 +587,7 @@ def page_script_generator():
         storage.save_script(script)
 
         # 检查固定开篇
-        expected = (f"Hi guys, it's Ivy. Day {day_number} of my daily English "
+        expected = (f"Hi guys, it's Lulu. Day {day_number} of my daily English "
                     f"practice. I keep talking to improve my oral English.")
         if not script.english_script.strip().startswith(expected):
             st.warning("⚠️ Fixed opening may have been modified — please double check")
@@ -575,27 +616,6 @@ def page_script_generator():
             file_name=f"day{script.day_number}_{script.topic.replace(' ', '_')}.txt",
             mime="text/plain",
         )
-
-    # 快捷主题按钮
-    st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
-    st.markdown(
-        '<div style="font-family:Inter,sans-serif;font-size:0.82rem;'
-        'color:#6B5E4F;margin-bottom:0.5rem;">🎯 Quick topics</div>',
-        unsafe_allow_html=True
-    )
-    topics = [
-        "AI product manager daily work routine",
-        "How to write a good PRD",
-        "Agile vs waterfall for AI teams",
-        "What I learned from a tech podcast today",
-        "Tips for communicating with engineers",
-        "The future of AI agents",
-    ]
-    cols = st.columns(3)
-    for i, topic in enumerate(topics):
-        with cols[i % 3]:
-            if st.button(topic, key=f"qt_{i}", use_container_width=True):
-                st.session_state["script_input"] = topic
 
     render_footer()
 
