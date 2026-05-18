@@ -55,6 +55,7 @@ st.markdown("""
 /* ── 全局覆盖 ── */
 .stApp {
     background-color: var(--cream);
+    color: var(--ink);
 }
 
 .main .block-container {
@@ -293,7 +294,12 @@ st.markdown("""
     border-radius: var(--radius-sm);
     border: 1px solid #D4C8B8;
     background: var(--warm-white);
+    color: var(--ink);
     padding: 0.6rem 1rem;
+}
+.stTextInput > div > div > input::placeholder {
+    color: #B5A995;
+    opacity: 1;
 }
 .stTextInput > div > div > input:focus {
     border-color: var(--amber);
@@ -301,6 +307,19 @@ st.markdown("""
 }
 .stSelectbox > div > div {
     border-radius: var(--radius-sm);
+    color: var(--ink);
+}
+.stSelectbox [data-baseweb="select"] * {
+    color: var(--ink);
+}
+
+/* ── 覆盖浏览器自动填充样式 ── */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--ink);
+    -webkit-box-shadow: 0 0 0px 1000px var(--warm-white) inset;
+    transition: background-color 5000s ease-in-out 0s;
 }
 
 /* ── 分割线 ── */
@@ -352,6 +371,17 @@ st.markdown("""
     font-family: 'Newsreader', serif;
     font-size: 1rem;
     color: var(--ink-light);
+}
+
+/* ── Streamlit 原生文本颜色强制覆盖 ── */
+.stMarkdown, .stMarkdown p, .stCaption, .stText {
+    color: var(--ink) !important;
+}
+.stExpander [data-testid="stExpander"] details summary {
+    color: var(--ink);
+}
+.stExpander [data-testid="stExpander"] details > div {
+    color: var(--ink);
 }
 
 /* ── 隐藏 Streamlit 默认元素 ── */
