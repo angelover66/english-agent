@@ -66,35 +66,37 @@ st.markdown("""
 /* ── 顶部导航条 ── */
 .top-nav {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     justify-content: flex-start;
-    padding: 0.5rem 0 1.25rem;
-    border-bottom: 1px solid #E8DFD3;
-    margin-bottom: 2rem;
-    gap: 12px;
+    padding: 0 0 0.75rem;
+    margin-bottom: 0.5rem;
+    gap: 14px;
+}
+.nav-logo {
+    flex-shrink: 0;
+}
+.nav-logo svg {
+    display: block;
 }
 .nav-brand {
     display: flex;
-    align-items: baseline;
-    gap: 10px;
+    flex-direction: column;
+    gap: 1px;
 }
 .nav-brand .logo {
-    font-size: 1.5rem;
+    font-size: 1.35rem;
     font-family: 'Newsreader', serif;
     font-weight: 600;
     color: var(--ink);
     letter-spacing: -0.01em;
+    line-height: 1.2;
 }
 .nav-brand .subtitle {
     font-family: 'Inter', sans-serif;
-    font-size: 0.82rem;
+    font-size: 0.78rem;
     color: var(--ink-light);
     font-weight: 400;
-    padding-top: 2px;
-}
-.nav-actions {
-    display: flex;
-    gap: 4px;
+    line-height: 1.3;
 }
 
 /* ── 页面标题 ── */
@@ -431,6 +433,25 @@ def render_top_nav():
     """渲染顶部导航"""
     st.markdown("""
     <div class="top-nav">
+        <div class="nav-logo">
+            <svg width="42" height="42" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <ellipse cx="50" cy="55" rx="42" ry="38" fill="#F5F1EB" stroke="#C8873A" stroke-width="3"/>
+                <ellipse cx="50" cy="58" rx="30" ry="26" fill="#FFFCF8"/>
+                <ellipse cx="40" cy="46" rx="7" ry="8" fill="#2C2416"/>
+                <ellipse cx="60" cy="46" rx="7" ry="8" fill="#2C2416"/>
+                <circle cx="37" cy="43" r="2.5" fill="white"/>
+                <circle cx="57" cy="43" r="2.5" fill="white"/>
+                <path d="M42 56 Q50 50 58 56" stroke="#2C2416" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                <path d="M42 56 Q46 62 50 56" stroke="#C8873A" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                <path d="M58 56 Q54 62 50 56" stroke="#C8873A" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                <path d="M22 28 Q15 12 30 20" fill="#F5F1EB" stroke="#C8873A" stroke-width="2.5"/>
+                <path d="M78 28 Q85 12 70 20" fill="#F5F1EB" stroke="#C8873A" stroke-width="2.5"/>
+                <path d="M20 42 Q8 34 14 22" fill="#F5F1EB" stroke="#C8873A" stroke-width="2"/>
+                <path d="M80 42 Q92 34 86 22" fill="#F5F1EB" stroke="#C8873A" stroke-width="2"/>
+                <path d="M18 50 Q8 46 10 34" fill="none" stroke="#C8873A" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M82 50 Q92 46 90 34" fill="none" stroke="#C8873A" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+        </div>
         <div class="nav-brand">
             <span class="logo">Lulu's Daily Mic</span>
             <span class="subtitle">Finding my voice, building my future.</span>
@@ -480,8 +501,6 @@ def send_macos_notification(title: str, subtitle: str, message: str):
 # ─── Page 1: Script Generator ─────────────────────────
 
 def page_script_generator():
-    render_top_nav()
-
     st.markdown('<div class="page-title">📝 Script Generator</div>',
                 unsafe_allow_html=True)
     st.markdown(
@@ -623,8 +642,6 @@ def page_script_generator():
 # ─── Page 2: My Scripts ───────────────────────────────
 
 def page_my_scripts():
-    render_top_nav()
-
     st.markdown('<div class="page-title">📚 My Scripts</div>',
                 unsafe_allow_html=True)
     st.markdown(
@@ -702,8 +719,6 @@ def page_my_scripts():
 # ─── Page 3: AI PM Materials ──────────────────────────
 
 def page_materials():
-    render_top_nav()
-
     st.markdown('<div class="page-title">📬 AI PM Learning Materials</div>',
                 unsafe_allow_html=True)
     st.markdown(
@@ -792,7 +807,9 @@ def page_materials():
 # ─── 主入口 ───────────────────────────────────────────
 
 def main():
-    # 简单的自定义导航标签
+    # 顶部品牌导航（在所有 tab 上方）
+    render_top_nav()
+    # 功能标签页
     tab1, tab2, tab3 = st.tabs([
         "📝 Script Generator",
         "📚 My Scripts",
