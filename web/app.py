@@ -276,18 +276,29 @@ st.markdown("""
     margin-top: 0.35rem;
 }
 
-/* ── Streamlit 原生组件覆盖 ── */
-.stButton > button {
-    font-family: 'Inter', sans-serif;
-    font-weight: 500;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--amber);
-    background: var(--amber);
+/* ── Quick Topics pill 按钮 ── */
+.qt-pills button {
+    font-size: 0.76rem !important; font-weight: 400 !important;
+    padding: 3px 12px !important; border-radius: 20px !important;
+    border: 1px solid #E8DFD3 !important; background: #FFFCF8 !important;
+    color: #6B5E4F !important; box-shadow: none !important;
+    height: auto !important; min-height: unset !important; line-height: 1.3 !important;
+}
+.qt-pills button:hover {
+    border-color: #C8873A !important; color: #C8873A !important; background: #FDF2E3 !important;
+}
+/* ── Generate 按钮 ── */
+button[kind="primary"] {
+    font-family: 'Inter', sans-serif; font-weight: 500; font-size: 0.9rem;
+    border-radius: 8px; border: 1px solid #C8873A; background: #C8873A;
+    color: white; padding: 0.5rem 1.5rem; box-shadow: none;
+}
+button[kind="primary"]:hover { background: #B0782E; border-color: #B0782E; }
     color: white;
     padding: 0.5rem 1.5rem;
-    transition: all 0.15s;
+    font-size: 0.9rem !important;
 }
-.stButton > button:hover {
+button[kind="primary"]:hover {
     background: #B0782E;
     border-color: #B0782E;
 }
@@ -391,25 +402,6 @@ input:-webkit-autofill:focus {
 footer { visibility: hidden; }
 header[data-testid="stHeader"] { background: transparent; }
 
-/* ── 标签页样式 ── */
-.stTabs [data-baseweb="tab-list"] {
-    gap: 0;
-    border-bottom: 1px solid #E8DFD3;
-}
-.stTabs [data-baseweb="tab"] {
-    font-family: 'Inter', sans-serif;
-    font-size: 0.88rem;
-    font-weight: 500;
-    color: var(--ink-light);
-    padding: 0.6rem 1.2rem;
-    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
-    border: none;
-    background: transparent;
-}
-.stTabs [aria-selected="true"] {
-    color: var(--amber) !important;
-    border-bottom: 2px solid var(--amber) !important;
-}
 </style>
 """, unsafe_allow_html=True)
 
@@ -454,7 +446,7 @@ def render_top_nav():
         </div>
         <div class="nav-brand">
             <span class="logo">Lulu's Daily Mic</span>
-            <span class="subtitle">Finding my voice, building my future.</span>
+            <span class="subtitle">Speak globally. Think deeply.</span>
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -483,7 +475,7 @@ def render_script_card(script: Script):
     <div class="script-meta">
         <span>📝 {script.word_count} words</span>
         <span>⏱ {duration_min}m {duration_sec}s</span>
-        <span>📌 Day {script.day_number}</span>
+        <span>📌 #{script.day_number}</span>
         <span>🔗 {script.source_type}</span>
         <span style="font-size:0.7rem;opacity:0.6">{script.id}</span>
     </div>
@@ -509,53 +501,42 @@ def page_script_generator():
         unsafe_allow_html=True
     )
 
-    # ── 快捷主题（放在输入框前面，利用 on_click 提前写入 session_state）──
-    st.markdown(
-        '<div style="font-family:Inter,sans-serif;font-size:0.82rem;'
-        'color:#6B5E4F;margin-bottom:0.5rem;">🎯 Quick topics</div>',
-        unsafe_allow_html=True
-    )
+    # ── 搜索框 + Generate（st.form 支持回车触发）──
+    with st.form(key="script_form", clear_on_submit=False):
+        col1, col2 = st.columns([5, 1])
+        with col1:
+            user_input = st.text_input(
+                "URL or topic",
+                placeholder="e.g. https://youtube.com/watch?v=xxx  or  a topic you like",
+                label_visibility="collapsed",
+                key="script_input"
+            )
+        with col2:
+            generate_btn = st.form_submit_button("Generate ✨", use_container_width=True)
+
+    # ── 推荐词条（搜索框下方的小标签）──
+    st.markdown('<div class="qt-pills">', unsafe_allow_html=True)
     topics = [
-        "AI product manager daily work routine",
-        "How to write a good PRD",
-        "Agile vs waterfall for AI teams",
-        "What I learned from a tech podcast today",
-        "Tips for communicating with engineers",
-        "The future of AI agents",
+        "Morning routine for a productive day",
+        "How to stay focused working from home",
+        "Small habits that improved my speaking",
+        "Interesting facts I learned this week",
+        "The health benefits of walking daily",
+        "What makes a great conversation",
     ]
 
-    def _on_quick_topic_click(t: str):
-        """在 text_input 控件创建之前写入 session_state，避免控件冲突"""
+    def _set_topic(t: str):
         st.session_state.script_input = t
 
-    cols = st.columns(3)
+    cols = st.columns([1, 1, 1])
     for i, topic in enumerate(topics):
         with cols[i % 3]:
             st.button(
                 topic, key=f"qt_{i}", use_container_width=True,
-                on_click=_on_quick_topic_click, args=(topic,),
+                on_click=_set_topic, args=(topic,),
             )
 
-    st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
-
-    # ── 输入区域 ──
-    col1, col2 = st.columns([5, 1])
-    with col1:
-        user_input = st.text_input(
-            "URL or topic",
-            placeholder="e.g. https://youtube.com/watch?v=xxx  or  AI product manager skills",
-            label_visibility="collapsed",
-            key="script_input"
-        )
-    with col2:
-        generate_btn = st.button("Generate ✨", use_container_width=True,
-                                 key="generate_btn")
-
-    st.markdown(
-        '<div class="input-hint">💡 Supports YouTube, Bilibili, articles, '
-        'or just a topic you want to talk about</div>',
-        unsafe_allow_html=True
-    )
+    st.markdown('</div>', unsafe_allow_html=True)
 
     if generate_btn and user_input.strip():
         with st.spinner("Fetching content..."):
@@ -572,7 +553,7 @@ def page_script_generator():
             render_footer()
             return
 
-        with st.spinner(f"Generating Day {script_skill.storage.get_next_day_number()} script..."):
+        with st.spinner(f"Generating script #{script_skill.storage.get_next_day_number()}..."):
             prompt = script_skill._load_prompt("script_generator.txt")
             day_number = script_skill.storage.get_next_day_number()
             prompt = prompt.replace("{day_number}", str(day_number))
@@ -614,14 +595,14 @@ def page_script_generator():
         # 显示结果
         st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
         st.markdown(f'<div class="page-title" style="font-size:1.2rem;">'
-                    f'Day {script.day_number} — {script.topic}</div>',
+                    f'#{script.day_number} {script.topic}</div>',
                     unsafe_allow_html=True)
         render_script_card(script)
 
         # 下载按钮
         text_content = (
             f"{'=' * 50}\n"
-            f"Day {script.day_number}: {script.topic}\n"
+            f"#{script.day_number} {script.topic}\n"
             f"{'=' * 50}\n\n"
             f"--- English Script ---\n\n{script.english_script}\n\n"
             f"--- 中文翻译 ---\n\n{script.chinese_translation}\n\n"
@@ -632,7 +613,7 @@ def page_script_generator():
         st.download_button(
             label="📥 Download script",
             data=text_content,
-            file_name=f"day{script.day_number}_{script.topic.replace(' ', '_')}.txt",
+            file_name=f"#{script.day_number}_{script.topic.replace(' ', '_')}.txt",
             mime="text/plain",
         )
 
@@ -688,7 +669,7 @@ def page_my_scripts():
     for s in filtered:
         # 简化显示：点击展开
         with st.expander(
-            f"**Day {s.get('day_number', '?')}** — {s.get('topic', 'Untitled')}  "
+            f"**#{s.get('day_number', '?')}** {s.get('topic', 'Untitled')}  "
             f"({s.get('word_count', 0)} words · {s.get('created_at', '')[:10]})"
         ):
             script = storage.load_script(s["id"])
@@ -697,13 +678,13 @@ def page_my_scripts():
                 c1, c2 = st.columns([1, 1])
                 with c1:
                     text_content = (
-                        f"Day {script.day_number}: {script.topic}\n\n"
+                        f"#{script.day_number} {script.topic}\n\n"
                         f"--- English ---\n\n{script.english_script}\n\n"
                         f"--- 中文 ---\n\n{script.chinese_translation}\n"
                     )
                     st.download_button(
                         "📥 Download", data=text_content,
-                        file_name=f"day{script.day_number}.txt",
+                        file_name=f"#{script.day_number}.txt",
                         mime="text/plain",
                         key=f"dl_{script.id}"
                     )
@@ -716,14 +697,14 @@ def page_my_scripts():
     render_footer()
 
 
-# ─── Page 3: AI PM Materials ──────────────────────────
+# ─── Page 3: AI Radar ────────────────────────────────
 
 def page_materials():
-    st.markdown('<div class="page-title">📬 AI PM Learning Materials</div>',
+    st.markdown('<div class="page-title">📡 AI Radar</div>',
                 unsafe_allow_html=True)
     st.markdown(
         '<div class="page-desc">Curated twice daily at 10:00 AM and 10:00 PM. '
-        'Practical resources for an AI product manager.</div>',
+        'Scanning the AI landscape so you don\'t have to.</div>',
         unsafe_allow_html=True
     )
 
@@ -809,20 +790,49 @@ def page_materials():
 def main():
     # 顶部品牌导航（在所有 tab 上方）
     render_top_nav()
-    # 功能标签页
-    tab1, tab2, tab3 = st.tabs([
-        "📝 Script Generator",
-        "📚 My Scripts",
-        "📬 AI PM Materials"
-    ])
 
-    with tab1:
+    # 单行块状 tab — 纯 HTML，短文案
+    active_tab = st.query_params.get("tab", "speak")
+
+    parrot = '<svg width="20" height="20" viewBox="0 0 72 72"><ellipse cx="36" cy="44" rx="25" ry="21" fill="#FFFCF8" stroke="#C8873A" stroke-width="2.2"/><circle cx="27" cy="38" r="4.5" fill="#2C2416"/><circle cx="45" cy="38" r="4.5" fill="#2C2416"/><circle cx="25" cy="36" r="1.8" fill="white"/><circle cx="43" cy="36" r="1.8" fill="white"/><path d="M36 24 Q30 14 24 20" fill="#F5F1EB" stroke="#C8873A" stroke-width="2"/><path d="M36 46 Q32 50 36 52 Q40 50 36 46" fill="#C8873A" opacity="0.7"/><path d="M38 52 L34 62 L42 62 Z" fill="#C8873A" opacity="0.5"/></svg>'
+    owl   = '<svg width="20" height="20" viewBox="0 0 72 72"><ellipse cx="36" cy="42" rx="24" ry="22" fill="#FFFCF8" stroke="#7A9A7E" stroke-width="2.2"/><circle cx="28" cy="36" r="7.5" fill="#2C2416"/><circle cx="44" cy="36" r="7.5" fill="#2C2416"/><circle cx="25" cy="33" r="2.8" fill="white"/><circle cx="41" cy="33" r="2.8" fill="white"/><ellipse cx="36" cy="46" rx="3.5" ry="2" fill="#7A9A7E"/><path d="M20 22 Q14 12 24 18" fill="#F5F1EB" stroke="#7A9A7E" stroke-width="2.2"/><path d="M52 22 Q58 12 48 18" fill="#F5F1EB" stroke="#7A9A7E" stroke-width="2.2"/></svg>'
+    fox   = '<svg width="20" height="20" viewBox="0 0 72 72"><ellipse cx="36" cy="44" rx="22" ry="19" fill="#FFFCF8" stroke="#4A7DB5" stroke-width="2.2"/><ellipse cx="30" cy="36" rx="4.5" ry="5.5" fill="#2C2416"/><ellipse cx="48" cy="36" rx="4.5" ry="5.5" fill="#2C2416"/><circle cx="28" cy="34" r="1.6" fill="white"/><circle cx="46" cy="34" r="1.6" fill="white"/><ellipse cx="39" cy="43" rx="3" ry="1.8" fill="#4A7DB5"/><path d="M20 20 Q14 10 22 17" fill="#F5F1EB" stroke="#4A7DB5" stroke-width="2"/><path d="M52 20 Q58 10 50 17" fill="#F5F1EB" stroke="#4A7DB5" stroke-width="2"/></svg>'
+
+    tabs = [
+        ("speak",  parrot, "Script Generator", "#C8873A", "#FDF2E3"),
+        ("library", owl,   "My Scripts",       "#7A9A7E", "#E8F0E9"),
+        ("radar",  fox,   "AI Radar",         "#4A7DB5", "#E3EEFA"),
+    ]
+
+    items = []
+    for key, svg, label, color, bg in tabs:
+        on  = active_tab == key
+        c   = color if on else "#E8DFD3"
+        b   = bg if on else "#FAF8F5"
+        t   = color if on else "#6B5E4F"
+        bb  = "transparent" if on else "#E8DFD3"
+        items.append(
+            f'<a href="?tab={key}" target="_self" style="text-decoration:none;flex:1;min-width:0;">'
+            f'<div style="display:flex;align-items:center;gap:6px;padding:8px 14px;'
+            f'background:{b};border:2px solid {c};border-bottom-color:{bb};'
+            f'border-radius:10px 10px 0 0;font-family:\'Inter\',sans-serif;'
+            f'font-size:0.84rem;font-weight:600;color:{t};white-space:nowrap;'
+            f'line-height:1;transition:all 0.15s;">'
+            f'{svg} {label}</div></a>'
+        )
+
+    st.markdown(
+        f'<div style="display:flex;gap:4px;margin-bottom:-2px;">{"".join(items)}</div>',
+        unsafe_allow_html=True,
+    )
+
+    st.markdown('<hr class="section-divider" style="margin-top:0;border-color:#E8DFD3;">', unsafe_allow_html=True)
+
+    if active_tab == "speak":
         page_script_generator()
-
-    with tab2:
+    elif active_tab == "library":
         page_my_scripts()
-
-    with tab3:
+    else:
         page_materials()
 
 

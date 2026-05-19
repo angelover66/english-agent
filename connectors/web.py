@@ -55,9 +55,10 @@ class WebConnector:
             if not video_id:
                 return self._fallback(url, "youtube", "无法解析 YouTube 视频 ID，请确认链接格式正确")
 
-            # 获取可用字幕列表
+            # 新版 API：创建实例，调用 .list() 获取字幕列表
+            yt_api = YouTubeTranscriptApi()
             try:
-                transcript_list = YouTubeTranscriptApi.list_transcripts(video_id)
+                transcript_list = yt_api.list(video_id)
             except VideoUnavailable:
                 return self._fallback(url, "youtube", "该视频不可用或已被删除")
             except TranscriptsDisabled:
@@ -96,11 +97,9 @@ class WebConnector:
             # 优先级 5：获取任意可用字幕
             if transcript is None:
                 try:
-                    # 遍历所有可用字幕，取第一个
                     all_transcripts = list(transcript_list)
                     if all_transcripts:
                         first = all_transcripts[0]
-                        # 如果不是英文，尝试翻译
                         if "en" not in first.language_code:
                             transcript = first.translate("en")
                         else:

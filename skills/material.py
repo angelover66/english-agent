@@ -1,8 +1,9 @@
-"""AI PM 学习材料策展 Skill — 早晚推送"""
+"""AI PM 学习材料策展 Skill — 早晚推送，含 URL 可访问性验证"""
 from __future__ import annotations
 from datetime import datetime
 from pathlib import Path
 
+import requests
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
@@ -32,6 +33,22 @@ class MaterialSkill:
                 raise FileNotFoundError(f"Prompt 文件未找到: {prompt_path}")
         return self._prompt_cache[name]
 
+    def _check_url(self, url: str, timeout: int = 5) -> bool:
+        """HEAD 请求验证 URL 可访问，返回 True/False"""
+        try:
+            r = requests.head(url, timeout=timeout, allow_redirects=True,
+                              headers={"User-Agent": "Mozilla/5.0"})
+            return r.status_code < 400
+        except Exception:
+            # HEAD 失败时尝试 GET（有些服务器不支持 HEAD）
+            try:
+                r = requests.get(url, timeout=timeout, stream=True,
+                                 headers={"User-Agent": "Mozilla/5.0"})
+                r.close()
+                return r.status_code < 400
+            except Exception:
+                return False
+
     def run(self, action: str = "", args: str = "") -> str:
         """统一入口，路由到具体命令"""
         action = action.strip().lower()
@@ -44,53 +61,89 @@ class MaterialSkill:
         else:
             return self._cmd_help()
 
-    # ─── push: 策展并推送 ──────────────────────────────
+    # ─── push: 策展并推送（确保精准 5 篇有效文章）────
 
     def _cmd_push(self, args: str) -> str:
-        """生成学习材料推送"""
+        """生成学习材料推送，验证 URL，确保恰好 5 篇"""
         args_lower = args.strip().lower()
         if "morning" in args_lower or "上午" in args_lower or "早" in args_lower:
             session = "morning"
         elif "evening" in args_lower or "晚上" in args_lower or "晚" in args_lower:
             session = "evening"
         else:
-            # 默认按当前时间判断
             hour = datetime.now().hour
             session = "morning" if hour < 14 else "evening"
 
         session_label = "早间" if session == "morning" else "晚间"
         emoji = "☀️" if session == "morning" else "🌙"
+        target_count = 5
+        max_retries = 3
 
-        with self.console.status(f"[cyan]正在策展{session_label}学习材料...[/]"):
-            prompt = self._load_prompt("material_curator.txt")
-            prompt = prompt.replace("{session}", session)
-            prompt = prompt.replace("{date}", datetime.now().strftime("%Y-%m-%d"))
+        prompt_template = self._load_prompt("material_curator.txt")
+        prompt_template = prompt_template.replace("{session}", session)
+        prompt_template = prompt_template.replace("{date}", datetime.now().strftime("%Y-%m-%d"))
 
-            try:
-                result = chat_json(
-                    system=prompt,
-                    messages=[{"role": "user",
-                               "content": f"Curate {session} learning materials for today."}],
-                )
-            except Exception as e:
-                return f"[red]LLM 调用失败: {e}[/]"
+        all_valid = []
+        session_desc = f"{session_label}学习材料"
+        retry = 0
 
-        # 构建 MaterialCollection
+        # 生成 + 验证循环：直到凑满 5 篇或重试耗尽
+        while len(all_valid) < target_count and retry <= max_retries:
+            if retry == 0:
+                status = f"[cyan]正在策展{session_label}学习材料...[/]"
+            else:
+                status = f"[cyan]补充策展中（已有 {len(all_valid)}/{target_count} 篇）...[/]"
+
+            with self.console.status(status):
+                try:
+                    result = chat_json(
+                        system=prompt_template,
+                        messages=[{"role": "user",
+                                   "content": f"Curate {session} learning materials. "
+                                   f"Generate exactly 8 candidates."}],
+                    )
+                except Exception as e:
+                    return f"[red]LLM 调用失败: {e}[/]"
+
+            if retry == 0:
+                session_desc = result.get("session_description", session_desc)
+
+            # 验证所有候选 URL
+            candidates = [MaterialItem.from_dict(m) for m in result.get("materials", [])]
+            with self.console.status(f"[dim]验证链接 ({len(candidates)} 个)...[/]"):
+                for m in candidates:
+                    url = m.url
+                    if url and self._check_url(url):
+                        if m not in all_valid:
+                            all_valid.append(m)
+                            if len(all_valid) >= target_count:
+                                break
+                    elif url:
+                        self.console.print(f"[yellow]⚠ 不可访问: {url[:70]}[/]")
+
+            retry += 1
+
+        # 取恰好 5 篇
+        final_materials = all_valid[:target_count]
+
+        if len(final_materials) < target_count:
+            self.console.print(
+                f"[yellow]⚠ 仅验证通过 {len(final_materials)}/{target_count} 篇"
+                f"（已重试 {max_retries} 次）[/]"
+            )
+
+        # 构建并保存
         now = datetime.now()
         date_str = now.strftime("%Y%m%d")
         collection = MaterialCollection(
             id=f"materials_{date_str}_{session}",
             pushed_at=now.isoformat(),
             session=session,
-            session_description=result.get("session_description", f"{session_label}学习材料"),
+            session_description=session_desc,
+            materials=final_materials,
         )
 
-        for m in result.get("materials", []):
-            collection.materials.append(MaterialItem.from_dict(m))
-
         self.storage.save_materials(collection)
-
-        # 显示结果
         return self._render_collection(collection, emoji, session_label)
 
     def _render_collection(self, collection: MaterialCollection, emoji: str,
