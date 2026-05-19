@@ -16,17 +16,23 @@ class ContentResult:
 
 @dataclass
 class Script:
-    """口语练习脚本"""
-    id: str = ""                          # 文件名标识 (script_YYYYMMDD_HHMMSS)
-    day_number: int = 1                   # Day X 序号
+    """口语练习脚本（含详细版 + 精简版双版本）"""
+    id: str = ""                          # 文件名标识
+    day_number: int = 1                   # 序号
     created_at: str = ""                  # ISO 时间戳
-    topic: str = ""                       # 主题 (3-5词简述)
+    topic: str = ""                       # 主题
     source_url: str = ""                  # 来源 URL
     source_type: str = ""                 # youtube / bilibili / webpage / topic
-    english_script: str = ""              # 完整英文脚本
-    chinese_translation: str = ""         # 完整中文翻译
-    word_count: int = 0                   # 英文词数
-    estimated_duration_seconds: int = 0   # 预估朗读时长(秒)
+    # 详细版
+    english_script: str = ""              # 英文脚本 (500-700词)
+    chinese_translation: str = ""         # 中文翻译
+    word_count: int = 0
+    estimated_duration_seconds: int = 0
+    # 精简版
+    concise_english: str = ""             # 精简英文脚本 (200-300词)
+    concise_chinese: str = ""             # 精简中文翻译
+    concise_word_count: int = 0
+    concise_duration_seconds: int = 0
 
     def to_dict(self) -> dict:
         return {
@@ -40,6 +46,10 @@ class Script:
             "chinese_translation": self.chinese_translation,
             "word_count": self.word_count,
             "estimated_duration_seconds": self.estimated_duration_seconds,
+            "concise_english": self.concise_english,
+            "concise_chinese": self.concise_chinese,
+            "concise_word_count": self.concise_word_count,
+            "concise_duration_seconds": self.concise_duration_seconds,
         }
 
     @classmethod

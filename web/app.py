@@ -288,12 +288,18 @@ st.markdown("""
     border-color: #C8873A !important; color: #C8873A !important; background: #FDF2E3 !important;
 }
 /* ── Generate 按钮 ── */
-button[kind="primary"] {
-    font-family: 'Inter', sans-serif; font-weight: 500; font-size: 0.9rem;
-    border-radius: 8px; border: 1px solid #C8873A; background: #C8873A;
-    color: white; padding: 0.5rem 1.5rem; box-shadow: none;
+button[kind="primary"],
+button[type="submit"],
+.stFormSubmitButton button,
+div[data-testid="stFormSubmitButton"] button {
+    font-family: 'Inter', sans-serif !important; font-weight: 600 !important; font-size: 0.95rem !important;
+    border-radius: 8px !important; border: none !important; background: #C8873A !important;
+    color: white !important; padding: 0.55rem 1.8rem !important; box-shadow: 0 2px 8px rgba(200,135,58,0.3) !important;
+    transition: all 0.15s !important;
 }
-button[kind="primary"]:hover { background: #B0782E; border-color: #B0782E; }
+button[kind="primary"]:hover,
+button[type="submit"]:hover,
+.stFormSubmitButton button:hover { background: #B0782E !important; box-shadow: 0 4px 14px rgba(200,135,58,0.4) !important; }
     color: white;
     padding: 0.5rem 1.5rem;
     font-size: 0.9rem !important;
@@ -463,19 +469,30 @@ def render_footer():
 
 
 def render_script_card(script: Script):
-    """渲染脚本展示卡片"""
+    """渲染双版本脚本卡片：详细版 + 精简版"""
+    # 详细版
+    st.markdown('<p style="font-family:Inter,sans-serif;font-size:0.82rem;'
+                f'color:#C8873A;font-weight:600;margin:0.5rem 0 0.25rem;">'
+                f'📖 Detailed ({script.word_count}w · ~{script.estimated_duration_seconds}s)</p>',
+                unsafe_allow_html=True)
     st.markdown(f'<div class="script-en">{script.english_script}</div>',
                 unsafe_allow_html=True)
     st.markdown(f'<div class="script-cn">{script.chinese_translation}</div>',
                 unsafe_allow_html=True)
-
-    duration_min = script.estimated_duration_seconds // 60
-    duration_sec = script.estimated_duration_seconds % 60
+    # 精简版
+    st.markdown('<p style="font-family:Inter,sans-serif;font-size:0.82rem;'
+                f'color:#C8873A;font-weight:600;margin:1rem 0 0.25rem;">'
+                f'⚡ Concise ({script.concise_word_count}w · ~{script.concise_duration_seconds}s)</p>',
+                unsafe_allow_html=True)
+    st.markdown(f'<div class="script-en">{script.concise_english}</div>',
+                unsafe_allow_html=True)
+    st.markdown(f'<div class="script-cn">{script.concise_chinese}</div>',
+                unsafe_allow_html=True)
+    # 元数据
     st.markdown(f"""
     <div class="script-meta">
-        <span>📝 {script.word_count} words</span>
-        <span>⏱ {duration_min}m {duration_sec}s</span>
-        <span>📌 #{script.day_number}</span>
+        <span>📝 {script.word_count}w / {script.concise_word_count}w</span>
+        <span>【{script.day_number}】</span>
         <span>🔗 {script.source_type}</span>
         <span style="font-size:0.7rem;opacity:0.6">{script.id}</span>
     </div>
@@ -496,8 +513,8 @@ def page_script_generator():
     st.markdown('<div class="page-title">📝 Script Generator</div>',
                 unsafe_allow_html=True)
     st.markdown(
-        '<div class="page-desc">Paste a video/article URL or type a topic — '
-        'get a 2-minute English oral practice script with Chinese translation.</div>',
+        '<div class="page-desc">Paste a YouTube / Bilibili link or type a topic — '
+        'generates English oral scripts.</div>',
         unsafe_allow_html=True
     )
 
@@ -515,6 +532,11 @@ def page_script_generator():
             generate_btn = st.form_submit_button("Generate ✨", use_container_width=True)
 
     # ── 推荐词条（搜索框下方的小标签）──
+    st.markdown(
+        '<p style="font-family:Inter,sans-serif;font-size:0.75rem;'
+        'color:#6B5E4F;margin:0 0 4px 2px;">💡 Try these topics — click to fill</p>',
+        unsafe_allow_html=True,
+    )
     st.markdown('<div class="qt-pills">', unsafe_allow_html=True)
     topics = [
         "Morning routine for a productive day",
@@ -553,7 +575,7 @@ def page_script_generator():
             render_footer()
             return
 
-        with st.spinner(f"Generating script #{script_skill.storage.get_next_day_number()}..."):
+        with st.spinner(f"Generating script 【{script_skill.storage.get_next_day_number()}】..."):
             prompt = script_skill._load_prompt("script_generator.txt")
             day_number = script_skill.storage.get_next_day_number()
             prompt = prompt.replace("{day_number}", str(day_number))
@@ -570,6 +592,10 @@ def page_script_generator():
                            "content": "Generate the English oral practice script."}],
             )
 
+        # 解析双版本 JSON
+        detailed = result.get("detailed", {})
+        concise = result.get("concise", {})
+
         now = datetime.now()
         script = Script(
             id=f"script_{now.strftime('%Y%m%d_%H%M%S')}",
@@ -578,10 +604,14 @@ def page_script_generator():
             topic=result.get("topic", "Daily Practice"),
             source_url=content.source_url or user_input.strip(),
             source_type=content.source_type,
-            english_script=result.get("english_script", ""),
-            chinese_translation=result.get("chinese_translation", ""),
-            word_count=result.get("word_count", 0),
-            estimated_duration_seconds=result.get("estimated_duration_seconds", 0),
+            english_script=detailed.get("english_script", ""),
+            chinese_translation=detailed.get("chinese_translation", ""),
+            word_count=detailed.get("word_count", 0),
+            estimated_duration_seconds=detailed.get("estimated_duration_seconds", 0),
+            concise_english=concise.get("english_script", ""),
+            concise_chinese=concise.get("chinese_translation", ""),
+            concise_word_count=concise.get("word_count", 0),
+            concise_duration_seconds=concise.get("estimated_duration_seconds", 0),
         )
 
         storage.save_script(script)
@@ -592,28 +622,45 @@ def page_script_generator():
         if not script.english_script.strip().startswith(expected):
             st.warning("⚠️ Fixed opening may have been modified — please double check")
 
-        # 显示结果
+        # 显示结果：详细版在上，精简版在下
         st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
         st.markdown(f'<div class="page-title" style="font-size:1.2rem;">'
-                    f'#{script.day_number} {script.topic}</div>',
+                    f'【{script.day_number}】 {script.topic}</div>',
                     unsafe_allow_html=True)
-        render_script_card(script)
+
+        # 详细版
+        st.markdown('<p style="font-family:Inter,sans-serif;font-size:0.85rem;'
+                    f'color:#C8873A;font-weight:600;margin:1rem 0 0.25rem;">'
+                    f'📖 Detailed ({script.word_count} words · ~{script.estimated_duration_seconds}s)</p>',
+                    unsafe_allow_html=True)
+        st.markdown(f'<div class="script-en">{script.english_script}</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="script-cn">{script.chinese_translation}</div>', unsafe_allow_html=True)
+
+        # 精简版
+        st.markdown('<p style="font-family:Inter,sans-serif;font-size:0.85rem;'
+                    f'color:#C8873A;font-weight:600;margin:1.5rem 0 0.25rem;">'
+                    f'⚡ Concise ({script.concise_word_count} words · ~{script.concise_duration_seconds}s)</p>',
+                    unsafe_allow_html=True)
+        st.markdown(f'<div class="script-en">{script.concise_english}</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="script-cn">{script.concise_chinese}</div>', unsafe_allow_html=True)
 
         # 下载按钮
         text_content = (
             f"{'=' * 50}\n"
-            f"#{script.day_number} {script.topic}\n"
+            f"【{script.day_number}】 {script.topic}\n"
             f"{'=' * 50}\n\n"
-            f"--- English Script ---\n\n{script.english_script}\n\n"
-            f"--- 中文翻译 ---\n\n{script.chinese_translation}\n\n"
-            f"Words: {script.word_count} | "
+            f"--- Detailed (English) ---\n\n{script.english_script}\n\n"
+            f"--- Detailed (中文) ---\n\n{script.chinese_translation}\n\n"
+            f"--- Concise (English) ---\n\n{script.concise_english}\n\n"
+            f"--- Concise (中文) ---\n\n{script.concise_chinese}\n\n"
+            f"Detailed: {script.word_count}w | Concise: {script.concise_word_count}w | "
             f"Duration: ~{script.estimated_duration_seconds}s | "
             f"Source: {script.source_url}\n"
         )
         st.download_button(
             label="📥 Download script",
             data=text_content,
-            file_name=f"#{script.day_number}_{script.topic.replace(' ', '_')}.txt",
+            file_name=f"script{script.day_number}_{script.topic.replace(' ', '_')}.txt",
             mime="text/plain",
         )
 
@@ -678,13 +725,13 @@ def page_my_scripts():
                 c1, c2 = st.columns([1, 1])
                 with c1:
                     text_content = (
-                        f"#{script.day_number} {script.topic}\n\n"
+                        f"【{script.day_number}】 {script.topic}\n\n"
                         f"--- English ---\n\n{script.english_script}\n\n"
                         f"--- 中文 ---\n\n{script.chinese_translation}\n"
                     )
                     st.download_button(
                         "📥 Download", data=text_content,
-                        file_name=f"#{script.day_number}.txt",
+                        file_name=f"script{script.day_number}.txt",
                         mime="text/plain",
                         key=f"dl_{script.id}"
                     )

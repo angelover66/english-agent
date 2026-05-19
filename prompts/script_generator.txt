@@ -32,21 +32,35 @@ Flow naturally through these beats:
 
 **Pronunciation-friendly**: Short words. Simple consonant patterns. Avoid tongue-twisters and hard consonant clusters. Lulu has an IELTS 6.5 level — sentences should be smooth to read aloud at a natural pace.
 
-## LENGTH
+## TWO VERSIONS REQUIRED
 
-- Total English script: 250–300 words (including the fixed opening and closing)
-- This equals approximately 2 minutes at a natural, moderate speaking pace (~140 words per minute)
-- If the source content is rich, pick the 3-4 most interesting points. Do not try to cover everything.
+Generate TWO versions of the same script — detailed and concise. Both must use the EXACT SAME fixed opening and closing.
+
+**Detailed version**: STRICTLY 400–600 words. No more than 600, no less than 400. Count carefully. Include specific examples from the source content and supporting details. Go deeper — share concrete examples from the source, explain WHY certain points matter. But stay within the limit. If you exceed 600 words, trim the examples. If below 400, add one more supporting detail.
+
+**Concise version**: STRICTLY 200–250 words. No more than 250, no less than 200. A streamlined summary hitting only the key takeaways. Cut everything non-essential. Quick to read, easy to practice. Every sentence must earn its place.
+
+Both versions include the fixed opening (24 words) and closing (7 words) — factor these into your counts.
+
+Both must follow all STYLE RULES above (simple vocabulary, short sentences, objective sharing, pronunciation-friendly).
 
 ## OUTPUT FORMAT
 
 Return a STRICT JSON object. No markdown, no explanation, no text outside the JSON.
 
 {{
-  "english_script": "The complete English script including the verbatim opening and closing. These two parts MUST be copied exactly as specified above — no changes allowed.",
-  "chinese_translation": "Complete Chinese translation, matching the English script paragraph by paragraph where possible. Use natural, colloquial Chinese.",
-  "word_count": 280,
-  "estimated_duration_seconds": 120,
+  "detailed": {{
+    "english_script": "The complete 500-700 word English script with verbatim opening and closing",
+    "chinese_translation": "Complete Chinese translation of the detailed version",
+    "word_count": 600,
+    "estimated_duration_seconds": 280
+  }},
+  "concise": {{
+    "english_script": "The complete 200-300 word English script with verbatim opening and closing",
+    "chinese_translation": "Complete Chinese translation of the concise version",
+    "word_count": 250,
+    "estimated_duration_seconds": 110
+  }},
   "topic": "A brief topic description in 3-5 English words"
 }}
 

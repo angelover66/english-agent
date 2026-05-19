@@ -62,7 +62,7 @@ class ScriptSkill:
 
         day_number = self.storage.get_next_day_number()
 
-        with self.console.status(f"[cyan]正在生成 Day {day_number} 脚本...[/]"):
+        with self.console.status(f"[cyan]正在生成 #{day_number} 脚本...[/]"):
             prompt = self._load_prompt("script_generator.txt")
             prompt = prompt.replace("{day_number}", str(day_number))
             prompt = prompt.replace("{source_type}", content.source_type)
@@ -79,6 +79,10 @@ class ScriptSkill:
             except Exception as e:
                 return f"[red]LLM 调用失败: {e}[/]"
 
+        # 解析双版本 JSON
+        detailed = result.get("detailed", {})
+        concise = result.get("concise", {})
+
         # 构建 Script
         now = datetime.now()
         script = Script(
@@ -88,10 +92,14 @@ class ScriptSkill:
             topic=result.get("topic", "Daily Practice"),
             source_url=content.source_url or args.strip(),
             source_type=content.source_type,
-            english_script=result.get("english_script", ""),
-            chinese_translation=result.get("chinese_translation", ""),
-            word_count=result.get("word_count", 0),
-            estimated_duration_seconds=result.get("estimated_duration_seconds", 0),
+            english_script=detailed.get("english_script", ""),
+            chinese_translation=detailed.get("chinese_translation", ""),
+            word_count=detailed.get("word_count", 0),
+            estimated_duration_seconds=detailed.get("estimated_duration_seconds", 0),
+            concise_english=concise.get("english_script", ""),
+            concise_chinese=concise.get("chinese_translation", ""),
+            concise_word_count=concise.get("word_count", 0),
+            concise_duration_seconds=concise.get("estimated_duration_seconds", 0),
         )
 
         self.storage.save_script(script)
@@ -105,33 +113,39 @@ class ScriptSkill:
         return self._render_script(script)
 
     def _render_script(self, script: Script) -> str:
-        """用 Rich Panel 渲染脚本"""
+        """用 Rich Panel 渲染双版本脚本"""
         self.console.print()
+        # 详细版
+        self.console.print(f"[bold cyan]📖 Detailed[/] ({script.word_count}w · {script.estimated_duration_seconds}s)")
         self.console.print(Panel(
             Text(script.english_script, style="white"),
-            title=f"[bold cyan]📝 Day {script.day_number} — {script.topic}[/]",
-            title_align="left",
-            border_style="cyan",
-            padding=(1, 2),
+            title=f"[bold cyan]📝 【{script.day_number}】 {script.topic}[/]",
+            title_align="left", border_style="cyan", padding=(1, 2),
         ))
-
         self.console.print(Panel(
             Text(script.chinese_translation, style="green"),
-            title="[bold green]🇨🇳 中文对照翻译[/]",
-            title_align="left",
-            border_style="green",
-            padding=(1, 2),
+            title="[bold green]🇨🇳 中文对照[/]",
+            title_align="left", border_style="green", padding=(1, 2),
         ))
-
+        # 精简版
+        self.console.print(f"[bold yellow]⚡ Concise[/] ({script.concise_word_count}w · {script.concise_duration_seconds}s)")
+        self.console.print(Panel(
+            Text(script.concise_english, style="white"),
+            border_style="yellow", padding=(1, 2),
+        ))
+        self.console.print(Panel(
+            Text(script.concise_chinese, style="green"),
+            border_style="green", padding=(1, 2),
+        ))
         # 元数据
         table = Table(show_header=False, box=None)
-        table.add_row("[dim]词数[/]", str(script.word_count),
-                      "[dim]预计时长[/]", f"{script.estimated_duration_seconds}s")
+        table.add_row("[dim]详细版词数[/]", str(script.word_count),
+                      "[dim]精简版词数[/]", str(script.concise_word_count))
         table.add_row("[dim]来源[/]",
                       f"[link={script.source_url}]{script.source_type}[/]",
                       "[dim]ID[/]", script.id)
         self.console.print(table)
-        return ""  # 返回空字符串，因为已直接打印到 console
+        return ""
 
     # ─── list: 列出历史脚本 ────────────────────────────
 
@@ -141,7 +155,7 @@ class ScriptSkill:
             return "[dim]还没有任何脚本，用 script generate <URL/主题> 来生成第一个吧～[/]"
 
         table = Table(title="📝 历史脚本", border_style="cyan")
-        table.add_column("Day", style="cyan", width=5)
+        table.add_column("#", style="cyan", width=4)
         table.add_column("主题", style="white")
         table.add_column("来源", style="dim", width=12)
         table.add_column("词数", width=6, justify="right")
@@ -150,7 +164,7 @@ class ScriptSkill:
 
         for s in scripts[:30]:  # 最多显示30条
             table.add_row(
-                f"#{s.get('day_number', '?')}",
+                f"【{s.get('day_number', '?')}】",
                 s.get("topic", "")[:30],
                 s.get("source_type", ""),
                 str(s.get("word_count", "")),
@@ -201,6 +215,6 @@ class ScriptSkill:
 
   [white]script generate <URL/主题>[/]  从视频/文章/主题生成脚本
   [white]script list[/]                  查看历史脚本
-  [white]script view <id 或 #Day号>[/]   查看脚本全文
+  [white]script view <id 或 #序号>[/]   查看脚本全文
   [white]script delete <id>[/]           删除脚本
 """.strip()
