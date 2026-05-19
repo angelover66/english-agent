@@ -1,0 +1,38 @@
+{
+  "id": "materials_20260519_morning",
+  "pushed_at": "2026-05-19T13:00:23.366945",
+  "session": "morning",
+  "session_description": "今天早上为你精选了8个可以直接上手的实用资源，涵盖AI agent开发、产品策略和行业洞察。",
+  "materials": [
+    {
+      "title": "Building effective agents",
+      "description": "Anthropic官方发布的白皮书，系统性地介绍了构建AI agent的架构模式、工具使用、安全考虑等关键要素。作为AI PM，这是你理解agent设计原则和最佳实践的必读材料。",
+      "type": "article",
+      "url": "https://docs.anthropic.com/en/docs/build-with-claude/agentic-patterns"
+    },
+    {
+      "title": "LangGraph Quick Start",
+      "description": "LangChain推出的LangGraph框架快速入门指南，教你如何用状态机的方式构建复杂的多步骤agent工作流。对于需要设计多agent协作系统的PM来说非常实用。",
+      "type": "course",
+      "url": "https://langchain-ai.github.io/langgraph/tutorials/introduction/"
+    },
+    {
+      "title": "Hugging Face Agent Course",
+      "description": "Hugging Face官方推出的免费agent课程，从基础概念到实战项目，涵盖了工具使用、记忆管理、多agent协作等核心主题。适合AI PM系统学习agent技术栈。",
+      "type": "course",
+      "url": "https://huggingface.co/learn/agents-course/"
+    },
+    {
+      "title": "CrewAI Building a Multi-Agent System",
+      "description": "CrewAI官方文档中的实战教程，教你如何构建一个多agent协作系统来处理复杂任务。对于正在规划agent产品的PM来说，这是理解角色分工和任务编排的绝佳参考。",
+      "type": "article",
+      "url": "https://docs.crewai.com/how-to/building-a-multi-agent-system"
+    },
+    {
+      "title": "Anthropic: Building effective agents",
+      "description": "Anthropic官方发布的Agent构建指南，涵盖模式选择、工具设计和工作流优化。直接关系到你的Agent产品设计决策，是构建可靠系统的必读材料。",
+      "type": "article",
+      "url": "https://docs.anthropic.com/en/docs/build-with-claude/agentic"
+    }
+  ]
+}

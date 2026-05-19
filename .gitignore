@@ -23,10 +23,8 @@ venv/
 .DS_Store
 Thumbs.db
 
-# Data
-data/
-materials/
-scripts/
+# Data (committed — serves as seed data for deployment)
+# data/ is tracked in git
 
 # Logs
 *.log

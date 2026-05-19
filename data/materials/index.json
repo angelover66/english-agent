@@ -1,0 +1,23 @@
+[
+  {
+    "id": "materials_20260519_morning",
+    "pushed_at": "2026-05-19T13:00:23.366945",
+    "session": "morning",
+    "session_description": "今天早上为你精选了8个可以直接上手的实用资源，涵盖AI agent开发、产品策略和行业洞察。",
+    "material_count": 5
+  },
+  {
+    "id": "materials_20260518_evening",
+    "pushed_at": "2026-05-18T23:16:52.383786",
+    "session": "evening",
+    "session_description": "今晚来点深度阅读，一起看看AI产品经理如何利用评估驱动智能体迭代，以及多智能体系统的最新实践案例，为明天的思考加点料。",
+    "material_count": 4
+  },
+  {
+    "id": "materials_20260518_morning",
+    "pushed_at": "2026-05-18T23:16:29.559176",
+    "session": "morning",
+    "session_description": "今天的晨间学习聚焦于AI代理产品经理最实用的技能——用实战案例和框架开启高效的一天。",
+    "material_count": 3
+  }
+]

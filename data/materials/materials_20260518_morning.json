@@ -1,0 +1,26 @@
+{
+  "id": "materials_20260518_morning",
+  "pushed_at": "2026-05-18T23:16:29.559176",
+  "session": "morning",
+  "session_description": "今天的晨间学习聚焦于AI代理产品经理最实用的技能——用实战案例和框架开启高效的一天。",
+  "materials": [
+    {
+      "title": "Building Effective AI Agents: A Practical Guide",
+      "description": "Anthropic官方发布的AI代理构建指南，详细介绍了从简单工作流到自主代理的设计模式、权衡和最佳实践。作为AI PM，这篇指南能帮你快速理解不同代理架构的适用场景，指导你与工程师沟通产品方案，避免常见陷阱。",
+      "type": "article",
+      "url": "https://www.anthropic.com/engineering/building-effective-ai-agents"
+    },
+    {
+      "title": "AI Agent Evaluation Framework",
+      "description": "LangChain团队推出的代理评估框架，涵盖从单元测试到端到端评估的完整方法论。对于AI PM来说，评估是代理产品落地的关键瓶颈——这套框架能帮你建立数据驱动的质量度量体系，向团队和 stakeholders 清晰展示产品表现。",
+      "type": "framework",
+      "url": "https://blog.langchain.dev/agent-evaluation-framework/"
+    },
+    {
+      "title": "Multi-Agent Orchestration: Patterns and Pitfalls",
+      "description": "一篇深度技术博文，剖析多代理系统中的编排模式（如路由器、监督者、层级结构）和实际案例。作为正在构建代理产品的PM，理解这些模式能让你在规划多代理协作场景时，更精准地评估技术可行性和产品价值。",
+      "type": "article",
+      "url": "https://www.multi-agent.io/blog/multi-agent-orchestration-patterns"
+    }
+  ]
+}

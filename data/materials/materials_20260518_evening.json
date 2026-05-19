@@ -1,0 +1,32 @@
+{
+  "id": "materials_20260518_evening",
+  "pushed_at": "2026-05-18T23:16:52.383786",
+  "session": "evening",
+  "session_description": "今晚来点深度阅读，一起看看AI产品经理如何利用评估驱动智能体迭代，以及多智能体系统的最新实践案例，为明天的思考加点料。",
+  "materials": [
+    {
+      "title": "Building Effective Agents",
+      "description": "Anthropic官方出品的深度文章，系统梳理了智能体设计模式（如工具使用、记忆、规划）以及多智能体协作架构。作为AI PM，理解这些底层设计选择能帮你更精准地定义产品需求、评估技术方案的权衡。",
+      "type": "article",
+      "url": "https://www.anthropic.com/engineering/building-effective-agents"
+    },
+    {
+      "title": "Evaluating AI Agents: A Practical Guide for Product Teams",
+      "description": "一篇实用的评估框架指南，涵盖如何为智能体产品设定关键指标（如任务成功率、鲁棒性、延迟）以及建立离线与在线评估流程。对AI PM来说，学会用数据驱动智能体迭代是提升产品可靠性的核心能力。",
+      "type": "article",
+      "url": "https://www.galileo.ai/blog/evaluating-ai-agents-a-practical-guide-for-product-teams"
+    },
+    {
+      "title": "Multi-Agent Orchestration for Customer Support",
+      "description": "Intercom分享的真实案例，讲述如何用多个专用智能体（意图分类、知识检索、情感分析）协同处理客服场景。案例中包含了架构决策、评估指标和迭代经验，对做Agent产品的PM特别有参考价值。",
+      "type": "article",
+      "url": "https://www.intercom.com/blog/multi-agent-orchestration-customer-support"
+    },
+    {
+      "title": "The AI Product Manager's Guide to Prompt Evaluation",
+      "description": "一篇系统介绍Prompt评估方法的文章，包括自动化评估、人工评估、A/B测试和用户反馈闭环。AI PM可以直接拿来设计自己的评估流程，确保每次Prompt改动都能被量化验证。",
+      "type": "article",
+      "url": "https://www.promptlayer.com/blog/ai-product-manager-guide-prompt-evaluation"
+    }
+  ]
+}
