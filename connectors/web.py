@@ -45,18 +45,101 @@ class WebConnector:
     # ─── YouTube 字幕抓取 ──────────────────────────────
 
     def _fetch_youtube(self, url: str) -> ContentResult:
-        """使用 youtube-transcript-api 获取字幕，优先英文手动字幕，回退自动生成/翻译"""
+        """使用 yt-dlp（主力）+ youtube-transcript-api（备选）获取字幕"""
+        video_id = self._extract_youtube_id(url)
+        if not video_id:
+            return self._fallback(url, "youtube", "无法解析 YouTube 视频 ID，请确认链接格式正确")
+
+        proxy_url = "http://127.0.0.1:4780"
+
+        # ── 方案一：yt-dlp + Chrome cookies + 代理 ──
+        try:
+            import yt_dlp
+            import re as _re
+
+            ydl_opts = {
+                "cookiesfrombrowser": ("chrome",),
+                "proxy": proxy_url,
+                "quiet": True,
+                "no_warnings": True,
+                "skip_download": True,
+            }
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                info = ydl.extract_info(video_id, download=False)
+
+            title = info.get("title", url)
+
+            # 合并手动字幕和自动字幕
+            all_subs = {}
+            if info.get("subtitles"):
+                all_subs.update(info["subtitles"])
+            if info.get("automatic_captions"):
+                all_subs.update(info["automatic_captions"])
+
+            # 优先英文：en → en-US → en-GB → 任意
+            target = None
+            for lang in ["en", "en-US", "en-GB"]:
+                if lang in all_subs:
+                    target = all_subs[lang]
+                    break
+            if target is None and all_subs:
+                target = list(all_subs.values())[0]
+
+            if target:
+                # 获取字幕 URL（优先 vtt）
+                sub_url = None
+                for fmt in target:
+                    if fmt.get("ext") == "vtt":
+                        sub_url = fmt["url"]
+                        break
+                if sub_url is None:
+                    sub_url = target[0]["url"]
+
+                # 下载并清洗字幕
+                r = requests.get(
+                    sub_url,
+                    proxies={"http": proxy_url, "https": proxy_url},
+                    timeout=15,
+                )
+                raw = r.text
+                # 去除 VTT 标签和时间戳
+                cleaned = _re.sub(r"<[^>]+>", "", raw)
+                cleaned = _re.sub(r"\d{2}:\d{2}:\d{2}\.\d{3} --> .*", "", cleaned)
+                lines = [
+                    l.strip() for l in cleaned.split("\n")
+                    if l.strip()
+                    and not l.startswith("WEBVTT")
+                    and not l.startswith("Kind:")
+                    and not l.startswith("Language:")
+                ]
+                text = " ".join(lines)
+
+                if len(text) > 4000:
+                    text = text[:4000] + "..."
+
+                return ContentResult(
+                    title=title,
+                    text=text,
+                    source_type="youtube",
+                    source_url=url,
+                    metadata={"video_id": video_id, "method": "yt-dlp"},
+                )
+
+        except Exception:
+            pass  # 回退到方案二
+
+        # ── 方案二：youtube-transcript-api + 代理 ──
         try:
             from youtube_transcript_api import YouTubeTranscriptApi
             from youtube_transcript_api._errors import (
-                NoTranscriptFound, TranscriptsDisabled, VideoUnavailable
+                NoTranscriptFound, TranscriptsDisabled, VideoUnavailable,
             )
-            video_id = self._extract_youtube_id(url)
-            if not video_id:
-                return self._fallback(url, "youtube", "无法解析 YouTube 视频 ID，请确认链接格式正确")
+            from youtube_transcript_api.proxies import GenericProxyConfig
 
-            # 新版 API：创建实例，调用 .list() 获取字幕列表
-            yt_api = YouTubeTranscriptApi()
+            proxy_cfg = GenericProxyConfig(
+                http_url=proxy_url, https_url=proxy_url
+            )
+            yt_api = YouTubeTranscriptApi(proxy_config=proxy_cfg)
             try:
                 transcript_list = yt_api.list(video_id)
             except VideoUnavailable:
@@ -66,58 +149,51 @@ class WebConnector:
 
             transcript = None
 
-            # 优先级 1：手动英文字幕
             try:
                 transcript = transcript_list.find_manually_created_transcript(["en"])
             except NoTranscriptFound:
                 pass
 
-            # 优先级 2：自动生成英文字幕
             if transcript is None:
                 try:
                     transcript = transcript_list.find_generated_transcript(["en"])
                 except NoTranscriptFound:
                     pass
 
-            # 优先级 3：任意英文字幕（含翻译）
             if transcript is None:
                 try:
                     transcript = transcript_list.find_transcript(["en"])
                 except NoTranscriptFound:
                     pass
 
-            # 优先级 4：中文字幕翻译成英文
             if transcript is None:
                 try:
-                    zh_transcript = transcript_list.find_transcript(["zh-Hans", "zh-Hant", "zh"])
-                    transcript = zh_transcript.translate("en")
+                    zh = transcript_list.find_transcript(["zh-Hans", "zh-Hant", "zh"])
+                    transcript = zh.translate("en")
                 except Exception:
                     pass
 
-            # 优先级 5：获取任意可用字幕
             if transcript is None:
                 try:
-                    all_transcripts = list(transcript_list)
-                    if all_transcripts:
-                        first = all_transcripts[0]
-                        if "en" not in first.language_code:
-                            transcript = first.translate("en")
-                        else:
-                            transcript = first
+                    all_list = list(transcript_list)
+                    if all_list:
+                        first = all_list[0]
+                        transcript = (
+                            first.translate("en")
+                            if "en" not in first.language_code
+                            else first
+                        )
                 except Exception:
                     pass
 
             if transcript is None:
                 return self._fallback(
                     url, "youtube",
-                    "该视频无可用字幕（可能未上传字幕或仅含硬编码字幕）"
+                    "该视频无可用字幕（可能未上传字幕或仅含硬编码字幕）",
                 )
 
-            # 提取字幕文本
             captions = transcript.fetch()
             text = " ".join([c.text for c in captions])
-
-            # 截断过长字幕（保留前 4000 字符）
             if len(text) > 4000:
                 text = text[:4000] + "..."
 
@@ -126,11 +202,11 @@ class WebConnector:
                 text=text,
                 source_type="youtube",
                 source_url=url,
-                metadata={"video_id": video_id},
+                metadata={"video_id": video_id, "method": "transcript-api"},
             )
 
         except Exception as e:
-            return self._fallback(url, "youtube", f"字幕抓取异常: {e}")
+            return self._fallback(url, "youtube", f"字幕抓取异常（IP/风控拦截）: {e}")
 
     def _extract_youtube_id(self, url: str) -> str:
         """从 YouTube URL 提取视频 ID，支持多种格式"""
