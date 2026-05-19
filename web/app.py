@@ -276,21 +276,23 @@ st.markdown("""
     margin-top: 0.35rem;
 }
 
-/* ── Tab radio 块状样式 ── */
-div[role="radiogroup"] {
+/* ── st.pills Tab 导航样式 ── */
+div[data-testid="stPills"] {
     gap: 4px !important;
     padding-bottom: 0 !important;
 }
-div[role="radiogroup"] label {
+div[data-testid="stPills"] button {
     font-family: 'Inter', sans-serif !important; font-size: 0.85rem !important;
     font-weight: 600 !important; color: #6B5E4F !important;
-    padding: 8px 20px !important; border-radius: 10px 10px 0 0 !important;
+    padding: 10px 22px !important; border-radius: 12px 12px 0 0 !important;
     border: 2px solid #E8DFD3 !important; background: #FAF8F5 !important;
     border-bottom-color: #E8DFD3 !important; margin-right: 0 !important;
-    transition: all 0.15s !important;
+    transition: all 0.15s !important; box-shadow: none !important;
 }
-div[role="radiogroup"] label:hover { border-color: #C8873A !important; color: #C8873A !important; background: #FDF2E3 !important; }
-div[role="radiogroup"] label[data-selected="true"] {
+div[data-testid="stPills"] button:hover {
+    border-color: #C8873A !important; color: #C8873A !important; background: #FDF2E3 !important;
+}
+div[data-testid="stPills"] button[aria-selected="true"] {
     color: #C8873A !important; border-color: #C8873A !important;
     background: #FDF2E3 !important; border-bottom-color: transparent !important;
 }
@@ -866,40 +868,45 @@ def page_materials():
 # ─── 主入口 ───────────────────────────────────────────
 
 def main():
-    # 顶部品牌导航（在所有 tab 上方）
     render_top_nav()
 
-    # 单行块状 tab — st.radio 秒切，零黑屏
+    # Tab 导航 — st.pills + 动物 SVG 装饰
     if "active_tab" not in st.session_state:
         st.session_state["active_tab"] = "speak"
-    active_tab = st.session_state["active_tab"]
+
+    parrots = '<svg width="20" height="20" viewBox="0 0 72 72"><ellipse cx="36" cy="44" rx="25" ry="21" fill="#FFFCF8" stroke="#C8873A" stroke-width="2.2"/><circle cx="27" cy="38" r="4.5" fill="#2C2416"/><circle cx="45" cy="38" r="4.5" fill="#2C2416"/><circle cx="25" cy="36" r="1.8" fill="white"/><circle cx="43" cy="36" r="1.8" fill="white"/><path d="M36 24 Q30 14 24 20" fill="#F5F1EB" stroke="#C8873A" stroke-width="2"/><path d="M36 46 Q32 50 36 52 Q40 50 36 46" fill="#C8873A" opacity="0.7"/><path d="M38 52 L34 62 L42 62 Z" fill="#C8873A" opacity="0.5"/></svg>'
+    owls    = '<svg width="20" height="20" viewBox="0 0 72 72"><ellipse cx="36" cy="42" rx="24" ry="22" fill="#FFFCF8" stroke="#7A9A7E" stroke-width="2.2"/><circle cx="28" cy="36" r="7.5" fill="#2C2416"/><circle cx="44" cy="36" r="7.5" fill="#2C2416"/><circle cx="25" cy="33" r="2.8" fill="white"/><circle cx="41" cy="33" r="2.8" fill="white"/><ellipse cx="36" cy="46" rx="3.5" ry="2" fill="#7A9A7E"/><path d="M20 22 Q14 12 24 18" fill="#F5F1EB" stroke="#7A9A7E" stroke-width="2.2"/><path d="M52 22 Q58 12 48 18" fill="#F5F1EB" stroke="#7A9A7E" stroke-width="2.2"/></svg>'
+    foxes   = '<svg width="20" height="20" viewBox="0 0 72 72"><ellipse cx="36" cy="44" rx="22" ry="19" fill="#FFFCF8" stroke="#4A7DB5" stroke-width="2.2"/><ellipse cx="30" cy="36" rx="4.5" ry="5.5" fill="#2C2416"/><ellipse cx="48" cy="36" rx="4.5" ry="5.5" fill="#2C2416"/><circle cx="28" cy="34" r="1.6" fill="white"/><circle cx="46" cy="34" r="1.6" fill="white"/><ellipse cx="39" cy="43" rx="3" ry="1.8" fill="#4A7DB5"/><path d="M20 20 Q14 10 22 17" fill="#F5F1EB" stroke="#4A7DB5" stroke-width="2"/><path d="M52 20 Q58 10 50 17" fill="#F5F1EB" stroke="#4A7DB5" stroke-width="2"/></svg>'
+
+    svgs = {"speak": parrots, "library": owls, "radar": foxes}
+    tab_labels = {"speak": "Script Generator", "library": "My Scripts", "radar": "AI Radar"}
 
     # 动物 SVG 装饰行
-    parrots = '<svg width="22" height="22" viewBox="0 0 72 72"><ellipse cx="36" cy="44" rx="25" ry="21" fill="#FFFCF8" stroke="#C8873A" stroke-width="2.2"/><circle cx="27" cy="38" r="4.5" fill="#2C2416"/><circle cx="45" cy="38" r="4.5" fill="#2C2416"/><circle cx="25" cy="36" r="1.8" fill="white"/><circle cx="43" cy="36" r="1.8" fill="white"/><path d="M36 24 Q30 14 24 20" fill="#F5F1EB" stroke="#C8873A" stroke-width="2"/><path d="M36 46 Q32 50 36 52 Q40 50 36 46" fill="#C8873A" opacity="0.7"/><path d="M38 52 L34 62 L42 62 Z" fill="#C8873A" opacity="0.5"/></svg>'
-    owls    = '<svg width="22" height="22" viewBox="0 0 72 72"><ellipse cx="36" cy="42" rx="24" ry="22" fill="#FFFCF8" stroke="#7A9A7E" stroke-width="2.2"/><circle cx="28" cy="36" r="7.5" fill="#2C2416"/><circle cx="44" cy="36" r="7.5" fill="#2C2416"/><circle cx="25" cy="33" r="2.8" fill="white"/><circle cx="41" cy="33" r="2.8" fill="white"/><ellipse cx="36" cy="46" rx="3.5" ry="2" fill="#7A9A7E"/><path d="M20 22 Q14 12 24 18" fill="#F5F1EB" stroke="#7A9A7E" stroke-width="2.2"/><path d="M52 22 Q58 12 48 18" fill="#F5F1EB" stroke="#7A9A7E" stroke-width="2.2"/></svg>'
-    foxes   = '<svg width="22" height="22" viewBox="0 0 72 72"><ellipse cx="36" cy="44" rx="22" ry="19" fill="#FFFCF8" stroke="#4A7DB5" stroke-width="2.2"/><ellipse cx="30" cy="36" rx="4.5" ry="5.5" fill="#2C2416"/><ellipse cx="48" cy="36" rx="4.5" ry="5.5" fill="#2C2416"/><circle cx="28" cy="34" r="1.6" fill="white"/><circle cx="46" cy="34" r="1.6" fill="white"/><ellipse cx="39" cy="43" rx="3" ry="1.8" fill="#4A7DB5"/><path d="M20 20 Q14 10 22 17" fill="#F5F1EB" stroke="#4A7DB5" stroke-width="2"/><path d="M52 20 Q58 10 50 17" fill="#F5F1EB" stroke="#4A7DB5" stroke-width="2"/></svg>'
-
-    svgs   = {"speak": parrots, "library": owls, "radar": foxes}
-    colors = {"speak": "#C8873A", "library": "#7A9A7E", "radar": "#4A7DB5"}
-
-    icon_cols = st.columns([1, 1, 1, 5])
+    deco_cols = st.columns([1, 1, 1, 5])
     for i, key in enumerate(["speak", "library", "radar"]):
-        on = active_tab == key
-        with icon_cols[i]:
+        on = st.session_state["active_tab"] == key
+        with deco_cols[i]:
             st.markdown(
-                f'<div style="text-align:center;padding:6px 0 2px;opacity:{"1" if on else "0.35"};transition:opacity 0.15s;">{svgs[key]}</div>',
+                f'<div style="text-align:center;padding:4px 0 0;opacity:{"1" if on else "0.35"};transition:opacity 0.15s;">{svgs[key]}</div>',
                 unsafe_allow_html=True,
             )
 
-    active_tab = st.radio(
+    active_tab = st.pills(
         "Nav", options=["speak", "library", "radar"],
-        format_func=lambda k: {"speak": "Script Generator", "library": "My Scripts", "radar": "AI Radar"}[k],
-        horizontal=True, label_visibility="collapsed",
-        index=["speak", "library", "radar"].index(active_tab),
+        format_func=lambda k: tab_labels[k],
+        selection_mode="single",
+        default=st.session_state["active_tab"],
+        label_visibility="collapsed",
     )
-    st.session_state["active_tab"] = active_tab
+    if active_tab:
+        st.session_state["active_tab"] = active_tab
+    else:
+        active_tab = st.session_state["active_tab"]
 
-    st.markdown('<hr class="section-divider" style="margin-top:0.25rem;border-color:#E8DFD3;">', unsafe_allow_html=True)
+    st.markdown(
+        '<hr class="section-divider" style="margin-top:0.25rem;border-color:#E8DFD3;">',
+        unsafe_allow_html=True,
+    )
 
     if active_tab == "speak":
         page_script_generator()
