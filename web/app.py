@@ -276,6 +276,25 @@ st.markdown("""
     margin-top: 0.35rem;
 }
 
+/* ── Tab radio 块状样式 ── */
+div[role="radiogroup"] {
+    gap: 4px !important;
+    padding-bottom: 0 !important;
+}
+div[role="radiogroup"] label {
+    font-family: 'Inter', sans-serif !important; font-size: 0.85rem !important;
+    font-weight: 600 !important; color: #6B5E4F !important;
+    padding: 8px 20px !important; border-radius: 10px 10px 0 0 !important;
+    border: 2px solid #E8DFD3 !important; background: #FAF8F5 !important;
+    border-bottom-color: #E8DFD3 !important; margin-right: 0 !important;
+    transition: all 0.15s !important;
+}
+div[role="radiogroup"] label:hover { border-color: #C8873A !important; color: #C8873A !important; background: #FDF2E3 !important; }
+div[role="radiogroup"] label[data-selected="true"] {
+    color: #C8873A !important; border-color: #C8873A !important;
+    background: #FDF2E3 !important; border-bottom-color: transparent !important;
+}
+
 /* ── Quick Topics pill 按钮 ── */
 .qt-pills button {
     font-size: 0.76rem !important; font-weight: 400 !important;
@@ -469,29 +488,35 @@ def render_footer():
 
 
 def render_script_card(script: Script):
-    """渲染双版本脚本卡片：详细版 + 精简版"""
+    """渲染脚本卡片：兼容旧版（单版本）和双版本"""
+    has_concise = bool(script.concise_english and script.concise_english.strip())
+
     # 详细版
     st.markdown('<p style="font-family:Inter,sans-serif;font-size:0.82rem;'
                 f'color:#C8873A;font-weight:600;margin:0.5rem 0 0.25rem;">'
-                f'📖 Detailed ({script.word_count}w · ~{script.estimated_duration_seconds}s)</p>',
+                f'{"📖 Detailed" if has_concise else "📖 Script"} ({script.word_count}w · ~{script.estimated_duration_seconds}s)</p>',
                 unsafe_allow_html=True)
     st.markdown(f'<div class="script-en">{script.english_script}</div>',
                 unsafe_allow_html=True)
     st.markdown(f'<div class="script-cn">{script.chinese_translation}</div>',
                 unsafe_allow_html=True)
-    # 精简版
-    st.markdown('<p style="font-family:Inter,sans-serif;font-size:0.82rem;'
-                f'color:#C8873A;font-weight:600;margin:1rem 0 0.25rem;">'
-                f'⚡ Concise ({script.concise_word_count}w · ~{script.concise_duration_seconds}s)</p>',
-                unsafe_allow_html=True)
-    st.markdown(f'<div class="script-en">{script.concise_english}</div>',
-                unsafe_allow_html=True)
-    st.markdown(f'<div class="script-cn">{script.concise_chinese}</div>',
-                unsafe_allow_html=True)
+
+    # 精简版（仅新版有）
+    if has_concise:
+        st.markdown('<p style="font-family:Inter,sans-serif;font-size:0.82rem;'
+                    f'color:#C8873A;font-weight:600;margin:1rem 0 0.25rem;">'
+                    f'⚡ Concise ({script.concise_word_count}w · ~{script.concise_duration_seconds}s)</p>',
+                    unsafe_allow_html=True)
+        st.markdown(f'<div class="script-en">{script.concise_english}</div>',
+                    unsafe_allow_html=True)
+        st.markdown(f'<div class="script-cn">{script.concise_chinese}</div>',
+                    unsafe_allow_html=True)
+
     # 元数据
+    wc = f"{script.word_count}w / {script.concise_word_count}w" if has_concise else f"{script.word_count}w"
     st.markdown(f"""
     <div class="script-meta">
-        <span>📝 {script.word_count}w / {script.concise_word_count}w</span>
+        <span>📝 {wc}</span>
         <span>【{script.day_number}】</span>
         <span>🔗 {script.source_type}</span>
         <span style="font-size:0.7rem;opacity:0.6">{script.id}</span>
@@ -716,7 +741,7 @@ def page_my_scripts():
     for s in filtered:
         # 简化显示：点击展开
         with st.expander(
-            f"**#{s.get('day_number', '?')}** {s.get('topic', 'Untitled')}  "
+            f"**【{s.get('day_number', '?')}】** {s.get('topic', 'Untitled')}  "
             f"({s.get('word_count', 0)} words · {s.get('created_at', '')[:10]})"
         ):
             script = storage.load_script(s["id"])
@@ -724,11 +749,17 @@ def page_my_scripts():
                 render_script_card(script)
                 c1, c2 = st.columns([1, 1])
                 with c1:
-                    text_content = (
-                        f"【{script.day_number}】 {script.topic}\n\n"
-                        f"--- English ---\n\n{script.english_script}\n\n"
-                        f"--- 中文 ---\n\n{script.chinese_translation}\n"
-                    )
+                    tc_parts = [
+                        f"【{script.day_number}】 {script.topic}\n",
+                        f"--- English ---\n{script.english_script}\n",
+                        f"--- 中文 ---\n{script.chinese_translation}\n",
+                    ]
+                    if script.concise_english and script.concise_english.strip():
+                        tc_parts += [
+                            f"--- Concise English ---\n{script.concise_english}\n",
+                            f"--- Concise 中文 ---\n{script.concise_chinese}\n",
+                        ]
+                    text_content = "\n".join(tc_parts)
                     st.download_button(
                         "📥 Download", data=text_content,
                         file_name=f"script{script.day_number}.txt",
@@ -838,42 +869,37 @@ def main():
     # 顶部品牌导航（在所有 tab 上方）
     render_top_nav()
 
-    # 单行块状 tab — 纯 HTML，短文案
-    active_tab = st.query_params.get("tab", "speak")
+    # 单行块状 tab — st.radio 秒切，零黑屏
+    if "active_tab" not in st.session_state:
+        st.session_state["active_tab"] = "speak"
+    active_tab = st.session_state["active_tab"]
 
-    parrot = '<svg width="20" height="20" viewBox="0 0 72 72"><ellipse cx="36" cy="44" rx="25" ry="21" fill="#FFFCF8" stroke="#C8873A" stroke-width="2.2"/><circle cx="27" cy="38" r="4.5" fill="#2C2416"/><circle cx="45" cy="38" r="4.5" fill="#2C2416"/><circle cx="25" cy="36" r="1.8" fill="white"/><circle cx="43" cy="36" r="1.8" fill="white"/><path d="M36 24 Q30 14 24 20" fill="#F5F1EB" stroke="#C8873A" stroke-width="2"/><path d="M36 46 Q32 50 36 52 Q40 50 36 46" fill="#C8873A" opacity="0.7"/><path d="M38 52 L34 62 L42 62 Z" fill="#C8873A" opacity="0.5"/></svg>'
-    owl   = '<svg width="20" height="20" viewBox="0 0 72 72"><ellipse cx="36" cy="42" rx="24" ry="22" fill="#FFFCF8" stroke="#7A9A7E" stroke-width="2.2"/><circle cx="28" cy="36" r="7.5" fill="#2C2416"/><circle cx="44" cy="36" r="7.5" fill="#2C2416"/><circle cx="25" cy="33" r="2.8" fill="white"/><circle cx="41" cy="33" r="2.8" fill="white"/><ellipse cx="36" cy="46" rx="3.5" ry="2" fill="#7A9A7E"/><path d="M20 22 Q14 12 24 18" fill="#F5F1EB" stroke="#7A9A7E" stroke-width="2.2"/><path d="M52 22 Q58 12 48 18" fill="#F5F1EB" stroke="#7A9A7E" stroke-width="2.2"/></svg>'
-    fox   = '<svg width="20" height="20" viewBox="0 0 72 72"><ellipse cx="36" cy="44" rx="22" ry="19" fill="#FFFCF8" stroke="#4A7DB5" stroke-width="2.2"/><ellipse cx="30" cy="36" rx="4.5" ry="5.5" fill="#2C2416"/><ellipse cx="48" cy="36" rx="4.5" ry="5.5" fill="#2C2416"/><circle cx="28" cy="34" r="1.6" fill="white"/><circle cx="46" cy="34" r="1.6" fill="white"/><ellipse cx="39" cy="43" rx="3" ry="1.8" fill="#4A7DB5"/><path d="M20 20 Q14 10 22 17" fill="#F5F1EB" stroke="#4A7DB5" stroke-width="2"/><path d="M52 20 Q58 10 50 17" fill="#F5F1EB" stroke="#4A7DB5" stroke-width="2"/></svg>'
+    # 动物 SVG 装饰行
+    parrots = '<svg width="22" height="22" viewBox="0 0 72 72"><ellipse cx="36" cy="44" rx="25" ry="21" fill="#FFFCF8" stroke="#C8873A" stroke-width="2.2"/><circle cx="27" cy="38" r="4.5" fill="#2C2416"/><circle cx="45" cy="38" r="4.5" fill="#2C2416"/><circle cx="25" cy="36" r="1.8" fill="white"/><circle cx="43" cy="36" r="1.8" fill="white"/><path d="M36 24 Q30 14 24 20" fill="#F5F1EB" stroke="#C8873A" stroke-width="2"/><path d="M36 46 Q32 50 36 52 Q40 50 36 46" fill="#C8873A" opacity="0.7"/><path d="M38 52 L34 62 L42 62 Z" fill="#C8873A" opacity="0.5"/></svg>'
+    owls    = '<svg width="22" height="22" viewBox="0 0 72 72"><ellipse cx="36" cy="42" rx="24" ry="22" fill="#FFFCF8" stroke="#7A9A7E" stroke-width="2.2"/><circle cx="28" cy="36" r="7.5" fill="#2C2416"/><circle cx="44" cy="36" r="7.5" fill="#2C2416"/><circle cx="25" cy="33" r="2.8" fill="white"/><circle cx="41" cy="33" r="2.8" fill="white"/><ellipse cx="36" cy="46" rx="3.5" ry="2" fill="#7A9A7E"/><path d="M20 22 Q14 12 24 18" fill="#F5F1EB" stroke="#7A9A7E" stroke-width="2.2"/><path d="M52 22 Q58 12 48 18" fill="#F5F1EB" stroke="#7A9A7E" stroke-width="2.2"/></svg>'
+    foxes   = '<svg width="22" height="22" viewBox="0 0 72 72"><ellipse cx="36" cy="44" rx="22" ry="19" fill="#FFFCF8" stroke="#4A7DB5" stroke-width="2.2"/><ellipse cx="30" cy="36" rx="4.5" ry="5.5" fill="#2C2416"/><ellipse cx="48" cy="36" rx="4.5" ry="5.5" fill="#2C2416"/><circle cx="28" cy="34" r="1.6" fill="white"/><circle cx="46" cy="34" r="1.6" fill="white"/><ellipse cx="39" cy="43" rx="3" ry="1.8" fill="#4A7DB5"/><path d="M20 20 Q14 10 22 17" fill="#F5F1EB" stroke="#4A7DB5" stroke-width="2"/><path d="M52 20 Q58 10 50 17" fill="#F5F1EB" stroke="#4A7DB5" stroke-width="2"/></svg>'
 
-    tabs = [
-        ("speak",  parrot, "Script Generator", "#C8873A", "#FDF2E3"),
-        ("library", owl,   "My Scripts",       "#7A9A7E", "#E8F0E9"),
-        ("radar",  fox,   "AI Radar",         "#4A7DB5", "#E3EEFA"),
-    ]
+    svgs   = {"speak": parrots, "library": owls, "radar": foxes}
+    colors = {"speak": "#C8873A", "library": "#7A9A7E", "radar": "#4A7DB5"}
 
-    items = []
-    for key, svg, label, color, bg in tabs:
-        on  = active_tab == key
-        c   = color if on else "#E8DFD3"
-        b   = bg if on else "#FAF8F5"
-        t   = color if on else "#6B5E4F"
-        bb  = "transparent" if on else "#E8DFD3"
-        items.append(
-            f'<a href="?tab={key}" target="_self" style="text-decoration:none;flex:1;min-width:0;">'
-            f'<div style="display:flex;align-items:center;gap:6px;padding:8px 14px;'
-            f'background:{b};border:2px solid {c};border-bottom-color:{bb};'
-            f'border-radius:10px 10px 0 0;font-family:\'Inter\',sans-serif;'
-            f'font-size:0.84rem;font-weight:600;color:{t};white-space:nowrap;'
-            f'line-height:1;transition:all 0.15s;">'
-            f'{svg} {label}</div></a>'
-        )
+    icon_cols = st.columns([1, 1, 1, 5])
+    for i, key in enumerate(["speak", "library", "radar"]):
+        on = active_tab == key
+        with icon_cols[i]:
+            st.markdown(
+                f'<div style="text-align:center;padding:6px 0 2px;opacity:{"1" if on else "0.35"};transition:opacity 0.15s;">{svgs[key]}</div>',
+                unsafe_allow_html=True,
+            )
 
-    st.markdown(
-        f'<div style="display:flex;gap:4px;margin-bottom:-2px;">{"".join(items)}</div>',
-        unsafe_allow_html=True,
+    active_tab = st.radio(
+        "Nav", options=["speak", "library", "radar"],
+        format_func=lambda k: {"speak": "Script Generator", "library": "My Scripts", "radar": "AI Radar"}[k],
+        horizontal=True, label_visibility="collapsed",
+        index=["speak", "library", "radar"].index(active_tab),
     )
+    st.session_state["active_tab"] = active_tab
 
-    st.markdown('<hr class="section-divider" style="margin-top:0;border-color:#E8DFD3;">', unsafe_allow_html=True)
+    st.markdown('<hr class="section-divider" style="margin-top:0.25rem;border-color:#E8DFD3;">', unsafe_allow_html=True)
 
     if active_tab == "speak":
         page_script_generator()
