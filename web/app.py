@@ -286,24 +286,29 @@ div[role="radiogroup"] label {
     font-family: 'Inter', sans-serif !important; font-size: 0.85rem !important;
     font-weight: 500 !important; color: #8B7E6F !important;
     padding: 10px 24px !important; border-radius: 12px 12px 0 0 !important;
-    border: 2px solid #E8DFD3 !important; background: #F5F1EB !important;
-    border-bottom-color: #E8DFD3 !important; margin-right: 0 !important;
+    border-width: 2px !important; border-style: solid !important;
+    border-color: #E8DFD3 !important; border-bottom-color: #E8DFD3 !important;
+    background: #F5F1EB !important; margin-right: 0 !important;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
     white-space: nowrap !important; flex-shrink: 0 !important;
     line-height: 1.3 !important; margin-bottom: 0 !important;
     cursor: pointer !important;
 }
-div[role="radiogroup"] label:hover {
-    border-color: #C8873A !important; color: #C8873A !important;
-    background: #FFFCF8 !important;
-}
-div[role="radiogroup"] label[data-selected="true"] {
+div[role="radiogroup"] label[data-selected="true"],
+div[role="radiogroup"] label[data-checked="true"],
+div[role="radiogroup"] label:has(input:checked) {
     font-size: 0.95rem !important; font-weight: 700 !important;
     padding: 13px 28px !important;
-    color: #C8873A !important; border-color: #C8873A !important;
+    color: #C8873A !important;
+    border-color: #C8873A !important; border-width: 2px !important;
     background: #FFFCF8 !important; border-bottom-color: transparent !important;
-    box-shadow: 0 -2px 8px rgba(200, 135, 58, 0.1) !important;
+    box-shadow: 0 -2px 10px rgba(200, 135, 58, 0.18) !important;
     z-index: 1 !important;
+}
+/* hover 只在不选中时变色 */
+div[role="radiogroup"] label:not([data-selected="true"]):not([data-checked="true"]):not(:has(input:checked)):hover {
+    border-color: #D4995A !important; color: #C8873A !important;
+    background: #FFFCF8 !important;
 }
 /* 隐藏 radio 圆点 */
 div[role="radiogroup"] label > div:first-child {
