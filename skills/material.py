@@ -61,10 +61,10 @@ class MaterialSkill:
         else:
             return self._cmd_help()
 
-    # ─── push: 策展并推送（确保精准 5 篇有效文章）────
+    # ─── push: 策展并推送（5 篇近期热点+技术内容）────
 
     def _cmd_push(self, args: str) -> str:
-        """生成学习材料推送，验证 URL，确保恰好 5 篇"""
+        """生成学习材料推送，验证 URL，确保恰好 5 篇近期有效文章"""
         args_lower = args.strip().lower()
         if "morning" in args_lower or "上午" in args_lower or "早" in args_lower:
             session = "morning"
@@ -87,10 +87,10 @@ class MaterialSkill:
         session_desc = f"{session_label}学习材料"
         retry = 0
 
-        # 生成 + 验证循环：直到凑满 5 篇或重试耗尽
+        # 生成 + 验证循环：直到凑满 5 篇近期内容或重试耗尽
         while len(all_valid) < target_count and retry <= max_retries:
             if retry == 0:
-                status = f"[cyan]正在策展{session_label}学习材料...[/]"
+                status = f"[cyan]正在策展{session_label}AI 学习材料（近期热点 + 技术干货）...[/]"
             else:
                 status = f"[cyan]补充策展中（已有 {len(all_valid)}/{target_count} 篇）...[/]"
 
@@ -100,7 +100,7 @@ class MaterialSkill:
                         system=prompt_template,
                         messages=[{"role": "user",
                                    "content": f"Curate {session} learning materials. "
-                                   f"Generate exactly 8 candidates."}],
+                                   f"Generate exactly 5 recent resources."}],
                     )
                 except Exception as e:
                     return f"[red]LLM 调用失败: {e}[/]"
