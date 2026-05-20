@@ -60,7 +60,7 @@ def _get_model() -> str:
 
 
 def _get_api_key() -> str:
-    # 优先级: 环境变量 > 配置文件
+    # 优先级: 环境变量 > Streamlit secrets > 配置文件
     provider = _get_provider()
     env_keys = {
         "anthropic": "ANTHROPIC_API_KEY",
@@ -68,8 +68,23 @@ def _get_api_key() -> str:
         "openai": "OPENAI_API_KEY",
     }
     env_var = env_keys.get(provider, "LLM_API_KEY")
-    key = os.environ.get(env_var) or _get_config_value("api_key", "")
-    return key
+
+    # 1. 环境变量
+    key = os.environ.get(env_var, "")
+    if key:
+        return key
+
+    # 2. Streamlit Cloud secrets
+    try:
+        import streamlit as _st
+        key = _st.secrets.get(env_var, "")
+        if key:
+            return key
+    except Exception:
+        pass
+
+    # 3. config.yaml
+    return _get_config_value("api_key", "")
 
 
 def _get_max_tokens() -> int:
@@ -145,45 +160,67 @@ def _chat_openai_compat(
         "Content-Type": "application/json",
     }
 
-    # 方案一：httpx（HTTP/1.1 强制 + 重试）
-    last_error = None
-    for attempt in range(3):
-        try:
-            with httpx.Client(timeout=180.0, http2=False) as client:
-                resp = client.post(url, headers=headers, json=payload)
-                if resp.status_code == 400 and "json" in resp.text.lower():
-                    # DeepSeek 特殊限制：response_format 要求 prompt 含 "json" 字样
-                    if json_mode:
-                        del payload["response_format"]
-                        resp = client.post(url, headers=headers, json=payload)
-                if resp.status_code != 200:
-                    raise RuntimeError(
-                        f"LLM API 错误 ({resp.status_code}): {resp.text[:500]}"
-                    )
-                data = resp.json()
-                return data["choices"][0]["message"]["content"]
-        except (httpx.LocalProtocolError, httpx.RemoteProtocolError,
-                httpx.ReadError, httpx.ConnectError) as e:
-            last_error = e
-            import time
-            time.sleep(1.5 ** attempt)
-            continue
-
-    # 方案二：回退到 requests
+    # 方案一：requests（最稳定，无 HTTP/2 协议问题）
+    last_errors = []
     try:
         import requests as _requests
-        r = _requests.post(url, headers=headers, json=payload, timeout=180)
-        if r.status_code == 400 and "json" in r.text.lower() and json_mode:
-            del payload["response_format"]
-            r = _requests.post(url, headers=headers, json=payload, timeout=180)
-        if r.status_code != 200:
-            raise RuntimeError(f"LLM API 错误 ({r.status_code}): {r.text[:500]}")
-        data = r.json()
-        return data["choices"][0]["message"]["content"]
+        for attempt in range(3):
+            try:
+                r = _requests.post(url, headers=headers, json=payload, timeout=180)
+                if r.status_code == 400 and "json" in r.text.lower() and json_mode:
+                    del payload["response_format"]
+                    r = _requests.post(url, headers=headers, json=payload, timeout=180)
+                if r.status_code != 200:
+                    raise RuntimeError(
+                        f"LLM API HTTP {r.status_code}: {r.text[:300]}"
+                    )
+                data = r.json()
+                return data["choices"][0]["message"]["content"]
+            except (_requests.ConnectionError, _requests.Timeout,
+                    _requests.RequestException) as e:
+                last_errors.append(f"requests[{attempt}]: {e}")
+                import time
+                time.sleep(1.5 ** attempt)
+                continue
+        raise RuntimeError(" | ".join(last_errors))
+    except RuntimeError:
+        raise
     except Exception as e:
-        raise RuntimeError(
-            f"LLM API 调用失败（httpx: {last_error}, requests: {e}）"
-        )
+        last_errors.append(f"requests: {e}")
+
+    # 方案二：httpx（HTTP/1.1 强制）
+    try:
+        for attempt in range(3):
+            try:
+                with httpx.Client(timeout=180.0, http2=False) as client:
+                    resp = client.post(url, headers=headers, json=payload)
+                    if resp.status_code == 400 and "json" in resp.text.lower():
+                        if json_mode:
+                            del payload["response_format"]
+                            resp = client.post(url, headers=headers, json=payload)
+                    if resp.status_code != 200:
+                        raise RuntimeError(
+                            f"LLM API HTTP {resp.status_code}: {resp.text[:300]}"
+                        )
+                    data = resp.json()
+                    return data["choices"][0]["message"]["content"]
+            except (httpx.LocalProtocolError, httpx.RemoteProtocolError,
+                    httpx.ReadError, httpx.ConnectError) as e:
+                last_errors.append(f"httpx[{attempt}]: {e}")
+                import time
+                time.sleep(1.5 ** attempt)
+                continue
+        raise RuntimeError(" | ".join(last_errors))
+    except RuntimeError:
+        raise
+    except Exception as e:
+        last_errors.append(f"httpx: {e}")
+
+    raise RuntimeError(
+        f"LLM API 调用全部失败（{' | '.join(last_errors)}）"
+        f"\n请检查：① DEEPSEEK_API_KEY 是否正确配置在 Streamlit Cloud secrets"
+        f"\n② 网络是否能访问 api.deepseek.com"
+    )
 
 
 # ─── 统一入口 ──────────────────────────────────────────
