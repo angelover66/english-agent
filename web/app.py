@@ -911,10 +911,7 @@ def page_materials():
 def main():
     render_top_nav()
 
-    # Tab 导航 — 方块式 radio：图标在文字左侧，选中态放大+变色
-    if "active_tab" not in st.session_state:
-        st.session_state["active_tab"] = "speak"
-
+    # Tab 导航 — 用 key 让 Streamlit 自动管理选中态，单击秒切
     tab_labels = {
         "speak": "🦜 Script Generator",
         "library": "🦉 My Scripts",
@@ -925,9 +922,8 @@ def main():
         "Nav", options=["speak", "library", "radar"],
         format_func=lambda k: tab_labels[k],
         horizontal=True, label_visibility="collapsed",
-        index=["speak", "library", "radar"].index(st.session_state["active_tab"]),
+        key="active_tab",
     )
-    st.session_state["active_tab"] = active_tab
 
     st.markdown(
         '<hr class="section-divider" style="margin-top:0.25rem;border-color:#E8DFD3;">',
