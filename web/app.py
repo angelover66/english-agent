@@ -276,25 +276,38 @@ st.markdown("""
     margin-top: 0.35rem;
 }
 
-/* ── st.pills Tab 导航样式 ── */
-div[data-testid="stPills"] {
+/* ── Tab 导航：方块式 radio，选中态放大+变色 ── */
+div[role="radiogroup"] {
     gap: 4px !important;
-    padding-bottom: 0 !important;
+    padding: 0 !important;
+    align-items: flex-end !important;
 }
-div[data-testid="stPills"] button {
+div[role="radiogroup"] label {
     font-family: 'Inter', sans-serif !important; font-size: 0.85rem !important;
-    font-weight: 600 !important; color: #6B5E4F !important;
-    padding: 10px 22px !important; border-radius: 12px 12px 0 0 !important;
-    border: 2px solid #E8DFD3 !important; background: #FAF8F5 !important;
+    font-weight: 500 !important; color: #8B7E6F !important;
+    padding: 10px 24px !important; border-radius: 12px 12px 0 0 !important;
+    border: 2px solid #E8DFD3 !important; background: #F5F1EB !important;
     border-bottom-color: #E8DFD3 !important; margin-right: 0 !important;
-    transition: all 0.15s !important; box-shadow: none !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    white-space: nowrap !important; flex-shrink: 0 !important;
+    line-height: 1.3 !important; margin-bottom: 0 !important;
+    cursor: pointer !important;
 }
-div[data-testid="stPills"] button:hover {
-    border-color: #C8873A !important; color: #C8873A !important; background: #FDF2E3 !important;
+div[role="radiogroup"] label:hover {
+    border-color: #C8873A !important; color: #C8873A !important;
+    background: #FFFCF8 !important;
 }
-div[data-testid="stPills"] button[aria-selected="true"] {
+div[role="radiogroup"] label[data-selected="true"] {
+    font-size: 0.95rem !important; font-weight: 700 !important;
+    padding: 13px 28px !important;
     color: #C8873A !important; border-color: #C8873A !important;
-    background: #FDF2E3 !important; border-bottom-color: transparent !important;
+    background: #FFFCF8 !important; border-bottom-color: transparent !important;
+    box-shadow: 0 -2px 8px rgba(200, 135, 58, 0.1) !important;
+    z-index: 1 !important;
+}
+/* 隐藏 radio 圆点 */
+div[role="radiogroup"] label > div:first-child {
+    display: none !important;
 }
 
 /* ── Quick Topics pill 按钮 ── */
@@ -870,38 +883,23 @@ def page_materials():
 def main():
     render_top_nav()
 
-    # Tab 导航 — st.pills + 动物 SVG 装饰
+    # Tab 导航 — 方块式 radio：图标在文字左侧，选中态放大+变色
     if "active_tab" not in st.session_state:
         st.session_state["active_tab"] = "speak"
 
-    parrots = '<svg width="20" height="20" viewBox="0 0 72 72"><ellipse cx="36" cy="44" rx="25" ry="21" fill="#FFFCF8" stroke="#C8873A" stroke-width="2.2"/><circle cx="27" cy="38" r="4.5" fill="#2C2416"/><circle cx="45" cy="38" r="4.5" fill="#2C2416"/><circle cx="25" cy="36" r="1.8" fill="white"/><circle cx="43" cy="36" r="1.8" fill="white"/><path d="M36 24 Q30 14 24 20" fill="#F5F1EB" stroke="#C8873A" stroke-width="2"/><path d="M36 46 Q32 50 36 52 Q40 50 36 46" fill="#C8873A" opacity="0.7"/><path d="M38 52 L34 62 L42 62 Z" fill="#C8873A" opacity="0.5"/></svg>'
-    owls    = '<svg width="20" height="20" viewBox="0 0 72 72"><ellipse cx="36" cy="42" rx="24" ry="22" fill="#FFFCF8" stroke="#7A9A7E" stroke-width="2.2"/><circle cx="28" cy="36" r="7.5" fill="#2C2416"/><circle cx="44" cy="36" r="7.5" fill="#2C2416"/><circle cx="25" cy="33" r="2.8" fill="white"/><circle cx="41" cy="33" r="2.8" fill="white"/><ellipse cx="36" cy="46" rx="3.5" ry="2" fill="#7A9A7E"/><path d="M20 22 Q14 12 24 18" fill="#F5F1EB" stroke="#7A9A7E" stroke-width="2.2"/><path d="M52 22 Q58 12 48 18" fill="#F5F1EB" stroke="#7A9A7E" stroke-width="2.2"/></svg>'
-    foxes   = '<svg width="20" height="20" viewBox="0 0 72 72"><ellipse cx="36" cy="44" rx="22" ry="19" fill="#FFFCF8" stroke="#4A7DB5" stroke-width="2.2"/><ellipse cx="30" cy="36" rx="4.5" ry="5.5" fill="#2C2416"/><ellipse cx="48" cy="36" rx="4.5" ry="5.5" fill="#2C2416"/><circle cx="28" cy="34" r="1.6" fill="white"/><circle cx="46" cy="34" r="1.6" fill="white"/><ellipse cx="39" cy="43" rx="3" ry="1.8" fill="#4A7DB5"/><path d="M20 20 Q14 10 22 17" fill="#F5F1EB" stroke="#4A7DB5" stroke-width="2"/><path d="M52 20 Q58 10 50 17" fill="#F5F1EB" stroke="#4A7DB5" stroke-width="2"/></svg>'
+    tab_labels = {
+        "speak": "🦜 Script Generator",
+        "library": "🦉 My Scripts",
+        "radar": "🦊 AI Radar",
+    }
 
-    svgs = {"speak": parrots, "library": owls, "radar": foxes}
-    tab_labels = {"speak": "Script Generator", "library": "My Scripts", "radar": "AI Radar"}
-
-    # 动物 SVG 装饰行
-    deco_cols = st.columns([1, 1, 1, 5])
-    for i, key in enumerate(["speak", "library", "radar"]):
-        on = st.session_state["active_tab"] == key
-        with deco_cols[i]:
-            st.markdown(
-                f'<div style="text-align:center;padding:4px 0 0;opacity:{"1" if on else "0.35"};transition:opacity 0.15s;">{svgs[key]}</div>',
-                unsafe_allow_html=True,
-            )
-
-    active_tab = st.pills(
+    active_tab = st.radio(
         "Nav", options=["speak", "library", "radar"],
         format_func=lambda k: tab_labels[k],
-        selection_mode="single",
-        default=st.session_state["active_tab"],
-        label_visibility="collapsed",
+        horizontal=True, label_visibility="collapsed",
+        index=["speak", "library", "radar"].index(st.session_state["active_tab"]),
     )
-    if active_tab:
-        st.session_state["active_tab"] = active_tab
-    else:
-        active_tab = st.session_state["active_tab"]
+    st.session_state["active_tab"] = active_tab
 
     st.markdown(
         '<hr class="section-divider" style="margin-top:0.25rem;border-color:#E8DFD3;">',
