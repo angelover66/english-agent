@@ -124,7 +124,6 @@ def _chat_openai_compat(
     api_key = _get_api_key()
     model = _get_model()
 
-    # 构建 OpenAI 格式的 messages
     openai_messages = []
     if system:
         openai_messages.append({"role": "system", "content": system})
@@ -141,22 +140,50 @@ def _chat_openai_compat(
         payload["response_format"] = {"type": "json_object"}
 
     url = f"{base_url.rstrip('/')}/v1/chat/completions"
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+    }
 
-    with httpx.Client(timeout=180.0) as client:
-        resp = client.post(
-            url,
-            headers={
-                "Authorization": f"Bearer {api_key}",
-                "Content-Type": "application/json",
-            },
-            json=payload,
-        )
-        if resp.status_code != 200:
-            raise RuntimeError(
-                f"LLM API 错误 ({resp.status_code}): {resp.text[:500]}"
-            )
-        data = resp.json()
+    # 方案一：httpx（HTTP/1.1 强制 + 重试）
+    last_error = None
+    for attempt in range(3):
+        try:
+            with httpx.Client(timeout=180.0, http2=False) as client:
+                resp = client.post(url, headers=headers, json=payload)
+                if resp.status_code == 400 and "json" in resp.text.lower():
+                    # DeepSeek 特殊限制：response_format 要求 prompt 含 "json" 字样
+                    if json_mode:
+                        del payload["response_format"]
+                        resp = client.post(url, headers=headers, json=payload)
+                if resp.status_code != 200:
+                    raise RuntimeError(
+                        f"LLM API 错误 ({resp.status_code}): {resp.text[:500]}"
+                    )
+                data = resp.json()
+                return data["choices"][0]["message"]["content"]
+        except (httpx.LocalProtocolError, httpx.RemoteProtocolError,
+                httpx.ReadError, httpx.ConnectError) as e:
+            last_error = e
+            import time
+            time.sleep(1.5 ** attempt)
+            continue
+
+    # 方案二：回退到 requests
+    try:
+        import requests as _requests
+        r = _requests.post(url, headers=headers, json=payload, timeout=180)
+        if r.status_code == 400 and "json" in r.text.lower() and json_mode:
+            del payload["response_format"]
+            r = _requests.post(url, headers=headers, json=payload, timeout=180)
+        if r.status_code != 200:
+            raise RuntimeError(f"LLM API 错误 ({r.status_code}): {r.text[:500]}")
+        data = r.json()
         return data["choices"][0]["message"]["content"]
+    except Exception as e:
+        raise RuntimeError(
+            f"LLM API 调用失败（httpx: {last_error}, requests: {e}）"
+        )
 
 
 # ─── 统一入口 ──────────────────────────────────────────
