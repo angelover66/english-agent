@@ -571,39 +571,57 @@ def page_script_generator():
         with col2:
             generate_btn = st.form_submit_button("Generate ✨", use_container_width=True)
 
-    # ── 动态推荐词条（每次新会话 LLM 生成，5-10 字，多领域轮换）──
+    # ── 动态推荐词条（每次新会话 LLM 生成，失败则回退静态话题）──
+    FALLBACK_TOPICS = [
+        "Morning routine for a productive day",
+        "How to stay focused working from home",
+        "Small habits that improved my speaking",
+        "Interesting facts I learned this week",
+        "The health benefits of walking daily",
+        "What makes a great conversation",
+    ]
+
     if "dynamic_topics" not in st.session_state:
         from core.llm import chat_json  # noqa: E402
-        topic_prompt = """Generate exactly 6 short English topics for oral English practice. Each topic MUST be 5-10 words long. Vary the categories: randomly pick from English learning, healthy living, hobbies & interests, AI & technology, fashion & lifestyle, world news, productivity, travel, food, science, books & reading, career growth. Make them specific and interesting — things a person would actually want to talk about for 2 minutes.
-
-Return STRICT JSON:
-{"topics": ["topic one here", "topic two here", ...]}"""
+        topic_prompt = (
+            'Generate exactly 6 short English topics for oral English practice. '
+            'Each topic MUST be 5-10 words long. Vary the categories: randomly pick from '
+            'English learning, healthy living, hobbies & interests, AI & technology, '
+            'fashion & lifestyle, world news, productivity, travel, food, science, '
+            'books & reading, career growth. Make them specific and interesting — '
+            'things a person would actually want to talk about for 2 minutes.\n\n'
+            'Return STRICT JSON:\n{"topics": ["topic one here", "topic two here", ...]}'
+        )
         try:
-            res = chat_json(system=topic_prompt, messages=[{"role": "user", "content": "Generate 6 varied topics."}])
-            st.session_state.dynamic_topics = res.get("topics", [])
+            res = chat_json(
+                system=topic_prompt,
+                messages=[{"role": "user", "content": "Generate 6 varied topics."}],
+            )
+            generated = res.get("topics", [])
+            st.session_state.dynamic_topics = generated if len(generated) == 6 else FALLBACK_TOPICS
         except Exception:
-            st.session_state.dynamic_topics = []
+            st.session_state.dynamic_topics = FALLBACK_TOPICS
+
     topics = st.session_state.dynamic_topics
 
-    if topics:
-        st.markdown(
-            '<p style="font-family:Inter,sans-serif;font-size:0.75rem;'
-            'color:#6B5E4F;margin:0 0 4px 2px;">💡 Try these topics — click to fill</p>',
-            unsafe_allow_html=True,
-        )
-        st.markdown('<div class="qt-pills">', unsafe_allow_html=True)
+    st.markdown(
+        '<p style="font-family:Inter,sans-serif;font-size:0.75rem;'
+        'color:#6B5E4F;margin:0 0 4px 2px;">💡 Try these topics — click to fill</p>',
+        unsafe_allow_html=True,
+    )
+    st.markdown('<div class="qt-pills">', unsafe_allow_html=True)
 
     def _set_topic(t: str):
         st.session_state.script_input = t
 
-        cols = st.columns([1, 1, 1])
-        for i, topic in enumerate(topics):
-            with cols[i % 3]:
-                st.button(
-                    topic, key=f"qt_{i}", use_container_width=True,
-                    on_click=_set_topic, args=(topic,),
-                )
-        st.markdown('</div>', unsafe_allow_html=True)
+    cols = st.columns([1, 1, 1])
+    for i, topic in enumerate(topics):
+        with cols[i % 3]:
+            st.button(
+                topic, key=f"qt_{i}", use_container_width=True,
+                on_click=_set_topic, args=(topic,),
+            )
+    st.markdown('</div>', unsafe_allow_html=True)
 
     if generate_btn and user_input.strip():
         with st.spinner("Fetching content..."):
