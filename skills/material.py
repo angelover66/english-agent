@@ -1,5 +1,6 @@
 """AI PM 学习材料策展 Skill — 早晚推送，含 URL 可访问性验证"""
 from __future__ import annotations
+import re
 from datetime import datetime
 from pathlib import Path
 
@@ -107,6 +108,12 @@ class MaterialSkill:
 
             if retry == 0:
                 session_desc = result.get("session_description", session_desc)
+                # 自动修正 LLM 生成的错误数字（如 "8个" → "5个"）
+                session_desc = re.sub(
+                    r'\d+[个篇条项]',
+                    f'{target_count}个',
+                    session_desc,
+                )
 
             # 验证所有候选 URL
             candidates = [MaterialItem.from_dict(m) for m in result.get("materials", [])]
@@ -144,7 +151,30 @@ class MaterialSkill:
         )
 
         self.storage.save_materials(collection)
+        self._git_sync()
         return self._render_collection(collection, emoji, session_label)
+
+    def _git_sync(self):
+        """推送后将 data/ 目录变更自动 commit + push 到 git"""
+        import subprocess
+        repo_root = Path(__file__).parent.parent
+        try:
+            subprocess.run(
+                ["git", "add", "data/materials/", "data/scripts/"],
+                cwd=repo_root, capture_output=True, text=True, check=True,
+            )
+            subprocess.run(
+                ["git", "commit", "-m",
+                 f"chore: auto-sync AI Radar + Scripts data ({datetime.now().strftime('%Y-%m-%d %H:%M')})"],
+                cwd=repo_root, capture_output=True, text=True, check=True,
+            )
+            subprocess.run(
+                ["git", "push"],
+                cwd=repo_root, capture_output=True, text=True, check=True,
+            )
+            self.console.print("[green]✅ 已同步到 git[/]")
+        except subprocess.CalledProcessError as e:
+            self.console.print(f"[yellow]⚠ Git 同步失败: {e.stderr.strip()}[/]")
 
     def _render_collection(self, collection: MaterialCollection, emoji: str,
                            label: str) -> str:
