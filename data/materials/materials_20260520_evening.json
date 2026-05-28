@@ -1,0 +1,38 @@
+{
+  "id": "materials_20260520_evening",
+  "pushed_at": "2026-05-20T22:38:21.398302",
+  "session": "evening",
+  "session_description": "今晚为你精选了8篇AI产品深度好文，涵盖Agent架构、多模态应用、PM职业洞察等，适合静心阅读与思考。",
+  "materials": [
+    {
+      "title": "Building effective agents",
+      "description": "Anthropic官方发布的Agent构建指南，详细介绍了Agent的设计模式、工具使用与安全考量。作为AI PM，理解这些底层设计原则能帮助你更好地评估技术方案和团队能力。",
+      "type": "article",
+      "url": "https://docs.anthropic.com/en/docs/build-with-claude/agentic"
+    },
+    {
+      "title": "LangGraph: A New Way to Build Stateful Agents",
+      "description": "LangChain博客介绍LangGraph框架，用于构建有状态、多步骤的Agent应用。对设计复杂工作流的PM来说，这是理解Agent编排的重要材料。",
+      "type": "article",
+      "url": "https://blog.langchain.dev/langgraph/"
+    },
+    {
+      "title": "How to Run LLMs Locally with Ollama",
+      "description": "GitHub上Ollama项目的README，指导如何在本地部署和运行大语言模型。对于关注数据隐私和离线场景的PM，这是实用的技术参考。",
+      "type": "tool",
+      "url": "https://github.com/ollama/ollama"
+    },
+    {
+      "title": "Building Effective Agents",
+      "description": "Anthropic官方发布的关于构建有效AI agent的深度指南，涵盖了从简单workflow到复杂agent的设计模式、实践建议和常见陷阱。对于正在做agent产品的PM来说，是必读的顶层设计参考。",
+      "type": "article",
+      "url": "https://docs.anthropic.com/en/docs/build-with-claude/agentic"
+    },
+    {
+      "title": "Meta AI: Building Responsible AI Products",
+      "description": "Meta AI关于负责任AI产品构建的实践指南，涵盖公平性、透明度和隐私保护等关键原则。作为AI PM，在产品设计中融入负责任的AI理念既是责任也是竞争力。",
+      "type": "article",
+      "url": "https://ai.meta.com/responsible-ai/"
+    }
+  ]
+}

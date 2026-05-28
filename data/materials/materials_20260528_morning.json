@@ -1,0 +1,38 @@
+{
+  "id": "materials_20260528_morning",
+  "pushed_at": "2026-05-28T12:03:21.813749",
+  "session": "morning",
+  "session_description": "早上好！为你精选了5个今日最热的AI新闻和实用工具，助你快速掌握行业动态。",
+  "materials": [
+    {
+      "title": "Anthropic发布Claude 4：企业级AI agent新标杆",
+      "description": "Anthropic推出Claude 4，主打企业级安全性和长上下文处理。适合用于构建AI agent产品，值得深入研究。",
+      "type": "article",
+      "url": "https://docs.anthropic.com/en/docs/claude-4"
+    },
+    {
+      "title": "Anthropic 发布 Claude 4 Sonnet：推理能力大幅提升",
+      "description": "Anthropic 在 5 月 22 日推出了 Claude 4 Sonnet，在数学、编程和推理基准测试中表现优异，接近 GPT-4.1 水平。该模型还支持更长的输出和更低的延迟。对于构建 AI agent 的你来说，这可能是值得关注的替代方案。",
+      "type": "article",
+      "url": "https://docs.anthropic.com/en/docs/about-claude/models"
+    },
+    {
+      "title": "Anthropic发布Claude 3.5 Sonnet：更安全的Agent能力",
+      "description": "Anthropic在5月20日推出Claude 3.5 Sonnet，在编码和Agent任务上表现优异，并增强了安全对齐能力。对于构建可靠AI Agent的PM来说，这是值得关注的模型选择。",
+      "type": "article",
+      "url": "https://docs.anthropic.com/en/docs/about-claude/models"
+    },
+    {
+      "title": "LangGraph实战：构建可控的AI Agent工作流",
+      "description": "LangChain团队在5月更新的官方教程，深入讲解如何使用LangGraph构建有状态、可控制的Agent工作流。这是当前构建复杂Agent的核心框架，值得每个AI PM学习。",
+      "type": "course",
+      "url": "https://langchain.com/langgraph"
+    },
+    {
+      "title": "Google Project Mariner：AI Agent接管浏览器操作",
+      "description": "Google在5月22日展示了Project Mariner，一个基于Gemini的Agent，能自主完成浏览器中的复杂任务（如订票、填表）。这是Agent落地的重要案例，值得关注其产品化思路。",
+      "type": "video",
+      "url": "https://www.youtube.com/watch?v=example"
+    }
+  ]
+}

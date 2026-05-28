@@ -1,9 +1,93 @@
 [
   {
+    "id": "materials_20260528_morning",
+    "pushed_at": "2026-05-28T12:03:21.813749",
+    "session": "morning",
+    "session_description": "早上好！为你精选了5个今日最热的AI新闻和实用工具，助你快速掌握行业动态。",
+    "material_count": 5
+  },
+  {
+    "id": "materials_20260526_morning",
+    "pushed_at": "2026-05-26T11:19:09.238308",
+    "session": "morning",
+    "session_description": "为你精选了5个最新的AI热点新闻和实用工具，帮你快速掌握行业动态，开启高效一天。",
+    "material_count": 5
+  },
+  {
+    "id": "materials_20260525_morning",
+    "pushed_at": "2026-05-25T10:37:39.344555",
+    "session": "morning",
+    "session_description": "早安！为你精选了5个最近30天内发布的AI产品管理热点资源，涵盖前沿论文、实用工具和行业分析，助你开启高效学习的一天。",
+    "material_count": 5
+  },
+  {
+    "id": "materials_20260524_evening",
+    "pushed_at": "2026-05-24T22:37:51.962452",
+    "session": "evening",
+    "session_description": "为你精选了5个晚间学习资源，涵盖AI Agent前沿技术、产品实践与行业趋势，助你深入理解并应用最新AI能力。",
+    "material_count": 5
+  },
+  {
+    "id": "materials_20260524_morning",
+    "pushed_at": "2026-05-24T10:38:10.992919",
+    "session": "morning",
+    "session_description": "早安，Lulu！今天为你精选了5个最新最热的AI资源，涵盖Agent技术突破、前沿研究、实用工具和行业动态，帮你快速把握趋势、激发灵感。",
+    "material_count": 5
+  },
+  {
+    "id": "materials_20260523_evening",
+    "pushed_at": "2026-05-23T22:38:07.376799",
+    "session": "evening",
+    "session_description": "为你精选了5个晚间深度学习的资源，涵盖AI Agent技术前沿与行业分析，助你把握最新动态。",
+    "material_count": 5
+  },
+  {
+    "id": "materials_20260523_morning",
+    "pushed_at": "2026-05-23T10:37:42.663906",
+    "session": "morning",
+    "session_description": "早上好！为你精选了5个最近AI领域最值得关注的资源，涵盖前沿工具、技术突破和产业动态，帮你快速掌握最新趋势。",
+    "material_count": 5
+  },
+  {
+    "id": "materials_20260522_evening",
+    "pushed_at": "2026-05-22T22:40:32.876316",
+    "session": "evening",
+    "session_description": "为你精选了5个近期AI领域的技术深度分析与行业洞察，助你在晚间充电学习。",
+    "material_count": 5
+  },
+  {
+    "id": "materials_20260521_morning",
+    "pushed_at": "2026-05-21T10:55:19.062284",
+    "session": "morning",
+    "session_description": "今天早上为你准备了5个热腾腾的AI新闻和实用工具，帮你快速掌握最新动态，开启高效一天！",
+    "material_count": 5
+  },
+  {
+    "id": "materials_20260520_evening",
+    "pushed_at": "2026-05-20T22:38:21.398302",
+    "session": "evening",
+    "session_description": "今晚为你精选了5篇AI产品深度好文，涵盖Agent架构、多模态应用、PM职业洞察等，适合静心阅读与思考。",
+    "material_count": 5
+  },
+  {
+    "id": "materials_20260520_morning",
+    "pushed_at": "2026-05-20T11:22:54.615317",
+    "session": "morning",
+    "session_description": "今天的晨间学习聚焦于AI Agent产品经理的实用工具和技巧，包括最新的多智能体框架、评测方法、提示词工程和产品案例，帮你快速上手并应用到日常工作中。",
+    "material_count": 5
+  },
+  {
+    "id": "materials_20260519_evening",
+    "pushed_at": "2026-05-19T22:38:02.443559",
+    "session": "evening",
+    "session_description": "今晚精选了5篇深度内容，涵盖AI代理产品策略、多智能体系统架构和行业趋势，适合静下心来思考和拓展视野。",
+    "material_count": 5
+  },
+  {
     "id": "materials_20260519_morning",
     "pushed_at": "2026-05-19T13:00:23.366945",
     "session": "morning",
-    "session_description": "今天早上为你精选了8个可以直接上手的实用资源，涵盖AI agent开发、产品策略和行业洞察。",
+    "session_description": "今天早上为你精选了5个可以直接上手的实用资源，涵盖AI agent开发、产品策略和行业洞察。",
     "material_count": 5
   },
   {

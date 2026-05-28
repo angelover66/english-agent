@@ -1,5 +1,109 @@
 [
   {
+    "id": "script_20260520_235311",
+    "day_number": 31,
+    "created_at": "2026-05-20T23:53:11.969226",
+    "topic": "Vocabulary learning tips",
+    "source_type": "youtube",
+    "word_count": 420
+  },
+  {
+    "id": "script_20260520_233547",
+    "day_number": 30,
+    "created_at": "2026-05-20T23:35:47.355777",
+    "topic": "Spaced repetition vocabulary learning",
+    "source_type": "topic",
+    "word_count": 294
+  },
+  {
+    "id": "script_20260520_231459",
+    "day_number": 29,
+    "created_at": "2026-05-20T23:14:59.753397",
+    "topic": "Hugging Face LLM course",
+    "source_type": "webpage",
+    "word_count": 247
+  },
+  {
+    "id": "script_20260520_231234",
+    "day_number": 28,
+    "created_at": "2026-05-20T23:12:34.631657",
+    "topic": "English prepositions like GPS",
+    "source_type": "youtube",
+    "word_count": 243
+  },
+  {
+    "id": "script_20260520_231135",
+    "day_number": 27,
+    "created_at": "2026-05-20T23:11:35.163595",
+    "topic": "Prepositions as GPS",
+    "source_type": "youtube",
+    "word_count": 405
+  },
+  {
+    "id": "script_20260520_224503",
+    "day_number": 26,
+    "created_at": "2026-05-20T22:45:03.519291",
+    "topic": "English prepositions as GPS",
+    "source_type": "youtube",
+    "word_count": 298
+  },
+  {
+    "id": "script_20260520_224352",
+    "day_number": 25,
+    "created_at": "2026-05-20T22:43:52.930015",
+    "topic": "Morning routine productivity",
+    "source_type": "topic",
+    "word_count": 298
+  },
+  {
+    "id": "script_20260520_222404",
+    "day_number": 24,
+    "created_at": "2026-05-20T22:24:04.040854",
+    "topic": "AI product manager skills",
+    "source_type": "topic",
+    "word_count": 220
+  },
+  {
+    "id": "script_20260519_170957",
+    "day_number": 23,
+    "created_at": "2026-05-19T17:09:57.771855",
+    "topic": "Vitamin D importance and deficiency",
+    "source_type": "topic",
+    "word_count": 420
+  },
+  {
+    "id": "script_20260519_170906",
+    "day_number": 22,
+    "created_at": "2026-05-19T17:09:06.133275",
+    "topic": "Vitamin D health benefits",
+    "source_type": "topic",
+    "word_count": 252
+  },
+  {
+    "id": "script_20260519_170013",
+    "day_number": 21,
+    "created_at": "2026-05-19T17:00:13.179475",
+    "topic": "Vitamin D importance",
+    "source_type": "topic",
+    "word_count": 453
+  },
+  {
+    "id": "script_20260519_165847",
+    "day_number": 20,
+    "created_at": "2026-05-19T16:58:47.777298",
+    "topic": "Vitamin D importance medical cases",
+    "source_type": "topic",
+    "word_count": 400
+  },
+  {
+    "id": "script_20260519_150100",
+    "day_number": 19,
+    "created_at": "2026-05-19T15:01:00.075133",
+    "topic": "AI agents explained",
+    "source_type": "webpage",
+    "word_count": 408
+  },
+  {
     "id": "script_20260519_135853",
     "day_number": 18,
     "created_at": "2026-05-19T13:58:53.488035",

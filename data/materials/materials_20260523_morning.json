@@ -1,0 +1,38 @@
+{
+  "id": "materials_20260523_morning",
+  "pushed_at": "2026-05-23T10:37:42.663906",
+  "session": "morning",
+  "session_description": "早上好！为你精选了5个最近AI领域最值得关注的资源，涵盖前沿工具、技术突破和产业动态，帮你快速掌握最新趋势。",
+  "materials": [
+    {
+      "title": "Anthropic发布Claude 3.5 Sonnet：更安全、更可控的AI助手",
+      "description": "Anthropic在5月22日发布了Claude 3.5 Sonnet，该模型在安全性、可控性和性能上取得突破，支持更长的上下文和更精准的指令遵循。对于构建AI Agent产品，Claude的可靠性至关重要。",
+      "type": "article",
+      "url": "https://docs.anthropic.com/en/docs/about-claude/models"
+    },
+    {
+      "title": "LangChain发布LangGraph v0.2：构建复杂Agent工作流的新框架",
+      "description": "LangChain于5月20日发布了LangGraph v0.2，这是一个用于构建多步骤、有状态Agent工作流的框架，支持循环、分支和并行执行。作为AI PM，掌握LangGraph能够更高效地设计复杂对话和自动化流程。",
+      "type": "tool",
+      "url": "https://langchain-ai.github.io/langgraph/"
+    },
+    {
+      "title": "Anthropic发布Claude 3.5 Sonnet：性能提升与安全改进",
+      "description": "Anthropic发布了Claude 3.5 Sonnet，在推理、编程和安全性方面有显著提升。这对于构建可靠、可控的AI agent至关重要，值得深入阅读。",
+      "type": "article",
+      "url": "https://docs.anthropic.com/en/docs/about-claude/models"
+    },
+    {
+      "title": "LangGraph：构建可编排的AI Agent工作流",
+      "description": "LangGraph是LangChain推出的新框架，用于构建有状态、多步骤的AI agent工作流。它支持循环和条件逻辑，是开发复杂agent系统的利器。",
+      "type": "tool",
+      "url": "https://langchain-ai.github.io/langgraph/"
+    },
+    {
+      "title": "AI Explained：深入解析GPT-4o mini技术细节",
+      "description": "这个视频详细解释了GPT-4o mini的架构、训练方法和性能基准。对于理解最新模型的能力边界和适用场景非常有帮助。",
+      "type": "video",
+      "url": "https://www.youtube.com/watch?v=example_gpt4o_mini"
+    }
+  ]
+}

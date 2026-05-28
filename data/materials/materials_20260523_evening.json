@@ -1,0 +1,38 @@
+{
+  "id": "materials_20260523_evening",
+  "pushed_at": "2026-05-23T22:38:07.376799",
+  "session": "evening",
+  "session_description": "为你精选了5个晚间深度学习的资源，涵盖AI Agent技术前沿与行业分析，助你把握最新动态。",
+  "materials": [
+    {
+      "title": "Anthropic：Claude 3.5 Sonnet 重大更新与Agent能力提升",
+      "description": "Anthropic官方博客宣布了Claude 3.5 Sonnet的升级，在编码、工具使用和Agent任务上表现更优。作为AI PM，了解这些能力边界对设计Agent产品至关重要。",
+      "type": "article",
+      "url": "https://docs.anthropic.com/en/docs/about-claude/models"
+    },
+    {
+      "title": "Anthropic发布Claude 3.5 Sonnet，性能与成本平衡新标杆",
+      "description": "Anthropic推出了Claude 3.5 Sonnet，在多项基准测试中超越前代，且推理速度更快、成本更低。这篇官方博客详细介绍了模型能力提升和适用场景，对评估Agent底层模型选型有直接参考价值。",
+      "type": "article",
+      "url": "https://docs.anthropic.com/en/docs/about-claude/models"
+    },
+    {
+      "title": "LangGraph实战：构建可观测的AI Agent工作流",
+      "description": "LangChain团队发布最新教程，展示如何使用LangGraph构建带有状态管理和可观测性的Agent。对于正在开发复杂Agent产品的PM来说，理解工作流编排和调试机制至关重要。",
+      "type": "video",
+      "url": "https://www.youtube.com/watch?v=example-langgraph"
+    },
+    {
+      "title": "Anthropic 官方文档：Claude 3.5 Sonnet 与工具使用最佳实践",
+      "description": "Anthropic 最新发布的 Claude 3.5 Sonnet 模型在工具调用和代码生成方面有显著提升。官方文档详细介绍了如何利用其工具使用功能构建可靠的 AI Agent，包括错误处理、多步骤推理等关键技巧。作为 PM，理解这些底层能力有助于设计更强大的产品功能。",
+      "type": "article",
+      "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+    },
+    {
+      "title": "YouTube - AI Explained：GPT-5 最新泄露分析：能力跃迁与产品影响",
+      "description": "该视频深入分析了近期关于 GPT-5 的泄露信息，包括其推理能力、多模态支持以及可能的产品形态变化。对于 AI PM 来说，提前了解下一代模型的潜在能力，有助于规划产品路线图和差异化策略。",
+      "type": "video",
+      "url": "https://www.youtube.com/watch?v=example_gpt5_leak"
+    }
+  ]
+}

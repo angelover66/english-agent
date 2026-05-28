@@ -1,0 +1,38 @@
+{
+  "id": "materials_20260524_evening",
+  "pushed_at": "2026-05-24T22:37:51.962452",
+  "session": "evening",
+  "session_description": "为你精选了5个晚间学习资源，涵盖AI Agent前沿技术、产品实践与行业趋势，助你深入理解并应用最新AI能力。",
+  "materials": [
+    {
+      "title": "Anthropic: Building effective agents",
+      "description": "Anthropic官方发布的关于构建高效AI Agent的深度指南，涵盖设计模式、工具使用和任务编排。作为AI PM，这篇文档能帮你理解Claude在Agent场景下的最佳实践，直接指导产品设计。",
+      "type": "article",
+      "url": "https://docs.anthropic.com/en/docs/build-with-claude/agentic"
+    },
+    {
+      "title": "LangGraph: A new way to build stateful agents",
+      "description": "LangChain团队推出的LangGraph框架，用于构建有状态、多步骤的AI Agent。视频教程带你从零搭建一个复杂Agent，对设计需要长期记忆和多轮交互的产品极有参考价值。",
+      "type": "video",
+      "url": "https://www.youtube.com/watch?v=pHZyG5GQz3s"
+    },
+    {
+      "title": "Anthropic 发布 Claude 3.5 Sonnet 与 Computer Use 功能",
+      "description": "Anthropic 发布了 Claude 3.5 Sonnet 模型，并推出革命性的 Computer Use 功能，允许 AI 直接操作计算机界面。作为 AI 产品经理，理解这一能力对构建自主代理产品至关重要，它重新定义了人机交互的边界。",
+      "type": "article",
+      "url": "https://www.anthropic.com/news/claude-3-5-sonnet"
+    },
+    {
+      "title": "LangChain 发布 LangGraph Studio：可视化构建代理工作流",
+      "description": "LangChain 推出了 LangGraph Studio，一个用于可视化设计和调试多步骤代理工作流的工具。AI 产品经理可以利用它直观地规划代理逻辑，加速原型迭代，降低团队沟通成本。",
+      "type": "tool",
+      "url": "https://blog.langchain.dev/langgraph-studio-the-first-agent-ide/"
+    },
+    {
+      "title": "Google 发布 Gemma 2 模型系列，面向轻量级代理场景",
+      "description": "Google 发布了 Gemma 2 系列模型（2B/9B/27B），在性能与效率上取得平衡，适合部署在资源受限的环境中。对于需要构建轻量级、低成本代理产品的 PM 来说，这是值得关注的模型选项。",
+      "type": "article",
+      "url": "https://ai.google.dev/gemma"
+    }
+  ]
+}

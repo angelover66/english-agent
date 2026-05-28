@@ -1,0 +1,38 @@
+{
+  "id": "materials_20260519_evening",
+  "pushed_at": "2026-05-19T22:38:02.443559",
+  "session": "evening",
+  "session_description": "今晚精选了8篇深度内容，涵盖AI代理产品策略、多智能体系统架构和行业趋势，适合静下心来思考和拓展视野。",
+  "materials": [
+    {
+      "title": "Building Effective Agents",
+      "description": "Anthropic官方发布的智能体构建指南，介绍了从简单工作流到自主智能体的设计模式，以及如何平衡复杂度和可靠性。对于正在构建AI代理产品的PM，这是必读的最佳实践。",
+      "type": "article",
+      "url": "https://docs.anthropic.com/en/docs/build-with-claude/agentic"
+    },
+    {
+      "title": "Multi-Agent Systems with CrewAI",
+      "description": "CrewAI官方文档中关于多智能体系统的实践指南，涵盖角色分配、任务委派和智能体间通信模式。对于设计复杂多智能体协作产品的PM，提供了可落地的框架。",
+      "type": "article",
+      "url": "https://docs.crewai.com/how-to/multi-agent-systems/"
+    },
+    {
+      "title": "Building Effective Agents",
+      "description": "Anthropic官方发布的智能体构建指南，详细讨论了agent的设计模式、工具使用、记忆管理等关键决策点。作为AI PM，理解这些底层设计原则能帮你更有效地与工程师协作，做出更好的产品决策。",
+      "type": "article",
+      "url": "https://docs.anthropic.com/en/docs/build-with-claude/agentic"
+    },
+    {
+      "title": "The Pragmatic Engineer: AI Engineering Trends",
+      "description": "深入分析当前AI工程领域的最新趋势，包括AI agent、RAG、模型评估等热点话题。对AI PM来说，了解这些技术趋势有助于把握产品方向和技术可行性。",
+      "type": "article",
+      "url": "https://newsletter.pragmaticengineer.com/"
+    },
+    {
+      "title": "Stratechery: AI and the End of Software",
+      "description": "Ben Thompson关于AI如何改变软件行业本质的深度分析。从商业模式、竞争格局到产品策略，为AI PM提供高屋建瓴的视角。",
+      "type": "article",
+      "url": "https://stratechery.com/"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "id": "script_20260520_231459",
+  "day_number": 29,
+  "created_at": "2026-05-20T23:14:59.753397",
+  "topic": "Hugging Face LLM course",
+  "source_url": "https://huggingface.co/learn/llm-course/chapter1/1",
+  "source_type": "webpage",
+  "english_script": "Hi guys, it's Lulu. Day 29 of my daily English practice. I keep talking to improve my oral English. Today I read about the Hugging Face LLM course. It is a free course about large language models. The course uses tools from Hugging Face. It also uses other AI tools. The course was first about NLP. Now it focuses more on LLMs. NLP is the study of how computers understand language. LLMs are big models that can do many language tasks. They are trained on a lot of data. Examples are GPT and Llama. The course has 12 chapters. Chapters 1 to 4 teach about the Transformers library. You learn how to use models from the Hub. You also learn to fine-tune and share models. Chapters 5 to 8 cover Datasets and Tokenizers. You learn to solve common NLP tasks. Chapter 9 is about building demos. You can share your work with others. Chapters 10 to 12 are advanced. They talk about fine-tuning and making good datasets. The course needs Python knowledge. It helps to have some deep learning background. But you do not need PyTorch or TensorFlow. The authors are from Hugging Face. One made Gradio. Another works on education. The third does not believe AGI comes from scaling. From this I learned that LLMs are a big step in AI. The course is a good path for learning. I want to try it someday. Thank you for listening, see you tomorrow.",
+  "chinese_translation": "大家好，我是Lulu。每日英语练习的第29天。我坚持说话来提高英语口语。今天我读到了关于Hugging Face LLM课程的内容。这是一个关于大型语言模型的免费课程。课程使用Hugging Face的工具。它也使用其他AI工具。课程最初是关于NLP的。现在更侧重于LLM。NLP是研究计算机如何理解语言的学科。LLM是大型模型，可以完成许多语言任务。它们在大量数据上训练。例子有GPT和Llama。课程有12章。第1到4章教Transformers库。你学习如何使用Hub上的模型。你还学习微调和分享模型。第5到8章涵盖数据集和分词器。你学习解决常见的NLP任务。第9章是关于构建演示。你可以与他人分享你的工作。第10到12章是高级内容。它们讨论微调和制作好的数据集。课程需要Python知识。有一些深度学习背景会有帮助。但你不需要PyTorch或TensorFlow。作者来自Hugging Face。一位创建了Gradio。另一位从事教育。第三位不相信AGI来自扩展。从中学到LLM是AI的一大进步。这个课程是学习的好路径。我想有一天试试看。谢谢聆听，明天见。",
+  "word_count": 247,
+  "estimated_duration_seconds": 110,
+  "concise_english": "Hi guys, it's Lulu. Day 29 of my daily English practice. I keep talking to improve my oral English. Today I read about the Hugging Face LLM course. It is a free course about large language models. The course has 12 chapters. First, you learn about the Transformers library. Then you learn about Datasets and Tokenizers. Later, you build demos. Finally, you learn advanced topics like fine-tuning. The course needs Python. It helps to know some deep learning. But you do not need PyTorch or TensorFlow. From this I learned that LLMs are powerful. The course is a good way to learn about them. Thank you for listening, see you tomorrow.",
+  "concise_chinese": "大家好，我是Lulu。每日英语练习的第29天。我坚持说话来提高英语口语。今天我读到了关于Hugging Face LLM课程的内容。这是一个关于大型语言模型的免费课程。课程有12章。首先，你学习Transformers库。然后你学习数据集和分词器。之后，你构建演示。最后，你学习高级主题如微调。课程需要Python。了解一些深度学习会有帮助。但你不需要PyTorch或TensorFlow。从中学到LLM很强大。这个课程是学习它们的好方法。谢谢聆听，明天见。",
+  "concise_word_count": 124,
+  "concise_duration_seconds": 60
+}

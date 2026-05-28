@@ -1,0 +1,38 @@
+{
+  "id": "materials_20260520_morning",
+  "pushed_at": "2026-05-20T11:22:54.615317",
+  "session": "morning",
+  "session_description": "今天的晨间学习聚焦于AI Agent产品经理的实用工具和技巧，包括最新的多智能体框架、评测方法、提示词工程和产品案例，帮你快速上手并应用到日常工作中。",
+  "materials": [
+    {
+      "title": "Anthropic: Prompt Engineering Interactive Tutorial",
+      "description": "Anthropic官方推出的交互式提示词工程教程，涵盖链式思维、角色提示等核心技巧。作为AI PM，掌握这些方法能帮你更高效地设计和优化Agent行为。",
+      "type": "course",
+      "url": "https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview"
+    },
+    {
+      "title": "CrewAI: Building Multi-Agent Systems",
+      "description": "CrewAI官方文档中关于多智能体系统的搭建指南，包括角色定义、任务分配和协作流程。适合想要设计复杂多Agent产品的PM参考。",
+      "type": "framework",
+      "url": "https://docs.crewai.com/core-concepts/Agents/"
+    },
+    {
+      "title": "Meta AI: Llama 3.1 Model Card",
+      "description": "Meta AI发布的Llama 3.1模型卡，详细介绍了模型能力、训练数据和基准测试。作为PM，了解开源模型的最新进展有助于技术选型。",
+      "type": "article",
+      "url": "https://ai.meta.com/blog/meta-llama-3-1/"
+    },
+    {
+      "title": "TechCrunch: AI Agent产品案例合集",
+      "description": "TechCrunch整理的AI Agent产品报道，涵盖客服、编程、数据分析等领域的落地案例。通过真实案例，PM可以快速了解市场趋势和用户需求。",
+      "type": "article",
+      "url": "https://techcrunch.com/category/artificial-intelligence/"
+    },
+    {
+      "title": "Building effective agents",
+      "description": "Anthropic官方发布的AI Agent构建指南，详细介绍了Agent的设计模式、工具使用和安全性考量。作为AI PM，理解这些最佳实践能帮你设计更可靠的Agent产品。",
+      "type": "article",
+      "url": "https://docs.anthropic.com/en/docs/build-with-claude/agentic"
+    }
+  ]
+}

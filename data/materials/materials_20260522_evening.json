@@ -1,0 +1,38 @@
+{
+  "id": "materials_20260522_evening",
+  "pushed_at": "2026-05-22T22:40:32.876316",
+  "session": "evening",
+  "session_description": "为你精选了5个近期AI领域的技术深度分析与行业洞察，助你在晚间充电学习。",
+  "materials": [
+    {
+      "title": "Anthropic发布MCP协议：让AI工具调用标准化",
+      "description": "Anthropic推出的Model Context Protocol (MCP) 旨在标准化AI模型与外部工具和数据的交互方式。这对于构建可扩展的AI Agent系统至关重要，PM应关注其如何简化集成并提升互操作性。",
+      "type": "article",
+      "url": "https://docs.anthropic.com/en/docs/agents-and-tools/mcp"
+    },
+    {
+      "title": "Google发布Gemini 2.5 Pro：推理能力大幅提升",
+      "description": "Google推出Gemini 2.5 Pro，具备更强的推理和代码生成能力，支持超长上下文。AI PM应评估其与竞品的差异，并探索在Agent产品中利用其推理优势的场景。",
+      "type": "article",
+      "url": "https://ai.google.dev/gemini-api/docs/models#gemini-2.5-pro"
+    },
+    {
+      "title": "LangGraph：构建可编排的AI代理工作流",
+      "description": "LangGraph是LangChain推出的新框架，专注于构建有状态、多步骤的AI代理工作流。本文介绍了如何用LangGraph设计复杂的代理行为，包括条件分支和循环，对设计生产级代理系统非常实用。",
+      "type": "article",
+      "url": "https://blog.langchain.dev/langgraph/"
+    },
+    {
+      "title": "Anthropic 发布 Claude 3.5 Sonnet 与 Artifacts 功能",
+      "description": "Anthropic 于5月22日推出Claude 3.5 Sonnet，并引入Artifacts功能，允许用户生成并迭代代码、文档等内容。这为Agent产品的交互设计提供了新思路。",
+      "type": "article",
+      "url": "https://docs.anthropic.com/en/docs/claude-3-5-sonnet"
+    },
+    {
+      "title": "Hugging Face 发布 Open LLM Leaderboard v2 与社区趋势分析",
+      "description": "Hugging Face 更新了开源大模型排行榜，纳入更多基准测试。关注排行榜变化有助于PM评估不同模型在Agent场景下的表现。",
+      "type": "article",
+      "url": "https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard"
+    }
+  ]
+}

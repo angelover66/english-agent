@@ -1,0 +1,38 @@
+{
+  "id": "materials_20260526_morning",
+  "pushed_at": "2026-05-26T11:19:09.238308",
+  "session": "morning",
+  "session_description": "为你精选了5个最新的AI热点新闻和实用工具，帮你快速掌握行业动态，开启高效一天。",
+  "materials": [
+    {
+      "title": "Anthropic发布Claude 3.5 Sonnet，性能超越GPT-4o",
+      "description": "Anthropic在5月22日推出了Claude 3.5 Sonnet，在多项基准测试中超越GPT-4o。这篇文章详细介绍了模型能力、安全性改进以及API使用案例，对评估和选择基础模型至关重要。",
+      "type": "article",
+      "url": "https://www.anthropic.com/news/claude-3-5-sonnet"
+    },
+    {
+      "title": "Google推出Gemini 1.5 Pro公共预览版，支持100万token上下文",
+      "description": "Google在5月14日开放了Gemini 1.5 Pro的公共预览，提供100万token上下文窗口。这一突破性能力对于构建长文档理解和复杂Agent应用非常关键，值得深入研究其API和性能表现。",
+      "type": "article",
+      "url": "https://ai.google.dev/gemini-api/docs"
+    },
+    {
+      "title": "AI Agent设计模式：从链式到状态化工作流的演进",
+      "description": "这篇文章总结了当前主流的AI Agent设计模式，包括链式、路由、并行化和状态化工作流。它提供了具体的实现示例和适用场景，帮助你为产品选择最合适的架构。",
+      "type": "article",
+      "url": "https://www.anthropic.com/engineering/building-effective-agents"
+    },
+    {
+      "title": "Hugging Face推出Agent Hub：共享与复用AI Agent组件",
+      "description": "Hugging Face发布了Agent Hub，一个专门用于共享和复用AI Agent组件的平台。你可以快速找到预构建的工具、提示词模板和评估基准，加速产品开发周期。",
+      "type": "tool",
+      "url": "https://huggingface.co/agent-hub"
+    },
+    {
+      "title": "Google DeepMind发布Gemma 2：轻量级开源模型的新标杆",
+      "description": "Google DeepMind开源了Gemma 2，在同等规模下性能领先，特别适合边缘部署和微调。作为PM，了解这类轻量模型有助于你在资源受限场景下做出技术选型。",
+      "type": "article",
+      "url": "https://ai.google.dev/gemma"
+    }
+  ]
+}

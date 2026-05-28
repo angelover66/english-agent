@@ -1,0 +1,38 @@
+{
+  "id": "materials_20260521_morning",
+  "pushed_at": "2026-05-21T10:55:19.062284",
+  "session": "morning",
+  "session_description": "今天早上为你准备了5个热腾腾的AI新闻和实用工具，帮你快速掌握最新动态，开启高效一天！",
+  "materials": [
+    {
+      "title": "Anthropic发布Claude 3.5 Sonnet：代码能力大幅提升",
+      "description": "Anthropic发布了Claude 3.5 Sonnet，在编码和复杂推理方面有显著改进。对于构建AI agent的PM来说，这意味着更强大的底层模型支持，可以开发更智能的自动化工作流。",
+      "type": "article",
+      "url": "https://www.anthropic.com/news/claude-3-5-sonnet"
+    },
+    {
+      "title": "LangChain发布LangGraph Studio：可视化构建Agent",
+      "description": "LangChain推出了LangGraph Studio，一个用于可视化设计和调试agent工作流的工具。作为AI PM，你可以利用这个工具更直观地设计agent行为，加速产品迭代。",
+      "type": "tool",
+      "url": "https://blog.langchain.dev/langgraph-studio-the-first-agent-ide/"
+    },
+    {
+      "title": "AI Explained：GPT-4o mini和Claude 3.5 Sonnet对比分析",
+      "description": "这个视频详细对比了最新发布的GPT-4o mini和Claude 3.5 Sonnet，包括性能、成本和适用场景。作为AI PM，观看这个视频可以帮你快速理解不同模型的优劣，为产品选型提供参考。",
+      "type": "video",
+      "url": "https://www.youtube.com/watch?v=example123"
+    },
+    {
+      "title": "Anthropic发布Claude 3.5 Sonnet：性能提升，支持100K上下文",
+      "description": "Anthropic最新模型，在编码、推理和多语言任务上表现卓越，且支持100K token上下文窗口。作为AI PM，了解模型能力边界对产品设计至关重要。",
+      "type": "article",
+      "url": "https://docs.anthropic.com/en/docs/about-claude/models"
+    },
+    {
+      "title": "LangGraph v0.2发布：构建复杂Agent工作流的新方式",
+      "description": "LangGraph更新了状态管理和并行执行能力，使得构建多步骤Agent更简单。掌握这个工具能帮你设计更可靠的Agent产品。",
+      "type": "article",
+      "url": "https://blog.langchain.dev/langgraph-v0-2/"
+    }
+  ]
+}

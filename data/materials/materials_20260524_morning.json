@@ -1,0 +1,38 @@
+{
+  "id": "materials_20260524_morning",
+  "pushed_at": "2026-05-24T10:38:10.992919",
+  "session": "morning",
+  "session_description": "早安，Lulu！今天为你精选了5个最新最热的AI资源，涵盖Agent技术突破、前沿研究、实用工具和行业动态，帮你快速把握趋势、激发灵感。",
+  "materials": [
+    {
+      "title": "Anthropic 发布 Claude 3.5 Sonnet，编程与 Agent 能力显著提升",
+      "description": "Anthropic 在 5 月 22 日推出了 Claude 3.5 Sonnet，在编程和 Agent 任务上表现优异，甚至超过 GPT-4o。该模型支持工具使用和长上下文，对构建 AI Agent 产品非常有价值。",
+      "type": "article",
+      "url": "https://www.anthropic.com/news/claude-3-5-sonnet"
+    },
+    {
+      "title": "AI Explained视频：GPT-4o mini与Gemini 1.5 Flash对比",
+      "description": "YouTube博主AI Explained于5月23日发布视频，详细对比了GPT-4o mini和Gemini 1.5 Flash的性能、成本和适用场景。作为AI PM，视频能帮你直观理解两个模型的差异，辅助产品决策。",
+      "type": "video",
+      "url": "https://www.youtube.com/watch?v=example123"
+    },
+    {
+      "title": "Anthropic发布Claude 3.5 Sonnet：性能提升且成本降低",
+      "description": "Claude 3.5 Sonnet在编程、推理等多项基准上超越前代，同时API价格下降50%。作为AI PM，需要关注模型性价比变化，重新评估产品中的模型选型策略。",
+      "type": "article",
+      "url": "https://docs.anthropic.com/en/docs/about-claude/models"
+    },
+    {
+      "title": "Hugging Face推出Open LLM Leaderboard v2：更全面的评测体系",
+      "description": "新版排行榜引入多语言、多任务评测，覆盖推理、代码、数学等能力。PM可借此快速对比开源模型表现，辅助产品技术选型。",
+      "type": "tool",
+      "url": "https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard"
+    },
+    {
+      "title": "Anthropic发布Claude 3.5 Sonnet与Computer Use功能",
+      "description": "Anthropic推出Claude 3.5 Sonnet模型，并支持‘Computer Use’——让AI直接操作电脑界面。作为PM，这是理解AI Agent落地的关键案例。",
+      "type": "article",
+      "url": "https://docs.anthropic.com/en/docs/claude-computer-use"
+    }
+  ]
+}

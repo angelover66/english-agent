@@ -1,0 +1,38 @@
+{
+  "id": "materials_20260525_morning",
+  "pushed_at": "2026-05-25T10:37:39.344555",
+  "session": "morning",
+  "session_description": "早安！为你精选了5个最近30天内发布的AI产品管理热点资源，涵盖前沿论文、实用工具和行业分析，助你开启高效学习的一天。",
+  "materials": [
+    {
+      "title": "Introducing Claude 3.5 Sonnet and Claude 3.5 Haiku",
+      "description": "Anthropic发布了Claude 3.5系列新模型，在编程和代理任务上表现优异。作为AI PM，了解这些模型的能力边界对于设计产品功能至关重要。",
+      "type": "article",
+      "url": "https://www.anthropic.com/news/claude-3-5-sonnet"
+    },
+    {
+      "title": "LangGraph: A Library for Building Stateful, Multi-Agent Applications",
+      "description": "LangChain发布了LangGraph，用于构建有状态的多智能体应用。这对你设计复杂的AI代理工作流非常有帮助。",
+      "type": "tool",
+      "url": "https://blog.langchain.dev/langgraph/"
+    },
+    {
+      "title": "Building Effective Agents: Lessons from Production",
+      "description": "Anthropic分享的构建高效AI代理的实战经验，包括设计原则和常见陷阱。这篇文章将直接指导你的产品开发工作。",
+      "type": "article",
+      "url": "https://www.anthropic.com/engineering/building-effective-agents"
+    },
+    {
+      "title": "Anthropic发布Claude 3.5 Opus：推理能力大幅提升",
+      "description": "Anthropic于2026年5月22日发布了Claude 3.5 Opus，在数学、编程和复杂推理任务上表现卓越，超越前代模型。对于构建AI Agent产品的你来说，Claude的推理增强意味着更可靠的决策和任务执行能力，值得深入研究其API和用例。",
+      "type": "article",
+      "url": "https://docs.anthropic.com/en/docs/about-claude/models"
+    },
+    {
+      "title": "CrewAI v0.10发布：支持多Agent协作和动态任务分配",
+      "description": "CrewAI在5月发布了v0.10版本，新增了动态任务分配、Agent间通信改进等功能，使得构建多Agent系统更加灵活高效。作为AI PM，掌握CrewAI的最新功能可以帮助你设计更复杂的Agent协作流程，提升产品自动化能力。",
+      "type": "tool",
+      "url": "https://docs.crewai.com/"
+    }
+  ]
+}
