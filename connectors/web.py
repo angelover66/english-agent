@@ -33,14 +33,15 @@ class WebConnector:
                 source_type="topic",
             )
 
-        platform = self._detect_platform(url_or_topic)
+        url = self._normalize_url(url_or_topic)
+        platform = self._detect_platform(url)
 
         if platform == "youtube":
-            return self._fetch_youtube(url_or_topic)
+            return self._fetch_youtube(url)
         elif platform == "bilibili":
-            return self._fetch_bilibili(url_or_topic)
+            return self._fetch_bilibili(url)
         else:
-            return self._fetch_webpage(url_or_topic)
+            return self._fetch_webpage(url)
 
     # ─── YouTube 字幕抓取 ──────────────────────────────
 
@@ -231,19 +232,47 @@ class WebConnector:
             return self._fallback(url, "youtube", f"字幕抓取失败（请尝试直接输入关键词生成脚本）: {str(e)[:100]}")
 
     def _extract_youtube_id(self, url: str) -> str:
-        """从 YouTube URL 提取视频 ID，支持多种格式"""
-        patterns = [
-            r"youtu\.be/([a-zA-Z0-9_-]+)",
-            r"youtube\.com/watch\?v=([a-zA-Z0-9_-]+)",
-            r"youtube\.com/embed/([a-zA-Z0-9_-]+)",
-            r"youtube\.com/shorts/([a-zA-Z0-9_-]+)",
-            r"youtube\.com/live/([a-zA-Z0-9_-]+)",
-            r"youtube\.com/v/([a-zA-Z0-9_-]+)",
-        ]
-        for p in patterns:
-            match = re.search(p, url)
+        """从 YouTube URL 提取视频 ID，支持多种格式、参数顺序无关、大小写不敏感"""
+        parsed = urlparse(url)
+        host = (parsed.netloc or "").lower()
+
+        # youtu.be 短链接
+        if "youtu.be" in host:
+            match = re.search(r"youtu\.be/([a-zA-Z0-9_-]+)", url, re.IGNORECASE)
             if match:
                 return match.group(1)
+            return ""
+
+        # youtube.com 系列
+        if "youtube.com" not in host:
+            return ""
+
+        # /watch — 用 parse_qs 提取 v 参数，无视参数顺序
+        if parsed.path.rstrip("/").endswith("/watch"):
+            params = parse_qs(parsed.query)
+            v = params.get("v", [])
+            if v:
+                return v[0]
+            return ""
+
+        # 其他路径格式：embed / shorts / live / v
+        path_patterns = [
+            r"/embed/([a-zA-Z0-9_-]+)",
+            r"/shorts/([a-zA-Z0-9_-]+)",
+            r"/live/([a-zA-Z0-9_-]+)",
+            r"/v/([a-zA-Z0-9_-]+)",
+        ]
+        for p in path_patterns:
+            match = re.search(p, parsed.path, re.IGNORECASE)
+            if match:
+                return match.group(1)
+
+        # 兜底：部分 URL 可能把 /watch?v= 嵌在 path 里（极少见）
+        params = parse_qs(parsed.query)
+        v = params.get("v", [])
+        if v:
+            return v[0]
+
         return ""
 
     # ─── Bilibili 字幕抓取 ──────────────────────────────
@@ -360,13 +389,27 @@ class WebConnector:
     # ─── 工具方法 ──────────────────────────────────────
 
     def _is_url(self, text: str) -> bool:
-        """判断输入是否为 URL"""
-        return bool(re.match(r"https?://", text.strip()))
+        """判断输入是否为 URL（支持有/无协议前缀）"""
+        text = text.strip()
+        if re.match(r"https?://", text):
+            return True
+        # 识别无协议的裸域名 URL，如 "youtube.com/watch?v=xxx"、"youtu.be/xxx"
+        if re.match(r"[\w.-]+\.\w{2,}/", text):
+            return True
+        return False
+
+    @staticmethod
+    def _normalize_url(text: str) -> str:
+        """确保 URL 有协议前缀，无协议时自动补 https://"""
+        text = text.strip()
+        if not re.match(r"https?://", text):
+            text = "https://" + text
+        return text
 
     def _detect_platform(self, url: str) -> str:
-        """识别 URL 对应平台"""
+        """识别 URL 对应平台（大小写不敏感）"""
         for platform, pattern in self._PLATFORM_PATTERNS:
-            if re.search(pattern, url):
+            if re.search(pattern, url, re.IGNORECASE):
                 return platform
         return "webpage"
 

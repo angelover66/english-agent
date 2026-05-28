@@ -820,6 +820,26 @@ def page_my_scripts():
 
 # ─── Page 3: AI Radar ────────────────────────────────
 
+def _render_material_card(m_dict: dict, index: int) -> str:
+    """渲染单条材料 HTML 卡片"""
+    m_type = m_dict.get("type", "article")
+    type_class = f"type-{m_type}" if m_type in [
+        "article", "video", "tool", "podcast", "book", "course", "framework"
+    ] else "type-article"
+    url = m_dict.get("url", "#")
+    url_display = url[:60] + "..." if len(url) > 60 else url
+    return f"""
+    <div class="material-item">
+        <div class="material-title">{index}. {m_dict.get("title", "")}</div>
+        <div class="material-desc">{m_dict.get("description", "")}</div>
+        <span class="material-type {type_class}">{m_type}</span>
+        <span style="font-size:0.75rem;color:#6B5E4F;">
+            <a href="{url}" target="_blank">{url_display}</a>
+        </span>
+    </div>
+    """
+
+
 def page_materials():
     st.markdown('<div class="page-title">📡 AI Radar</div>',
                 unsafe_allow_html=True)
@@ -829,79 +849,48 @@ def page_materials():
         unsafe_allow_html=True
     )
 
-    # 最新推送横幅
-    latest = storage.get_latest_materials()
-    if latest:
-        emoji = "☀️" if latest.session == "morning" else "🌙"
-        session_label = "Morning" if latest.session == "morning" else "Evening"
-        st.markdown(f"""
-        <div class="push-banner">
-            <div class="emoji">{emoji}</div>
-            <div class="header">{session_label} Edition · {latest.pushed_at[:10]}</div>
-            <div class="theme">{latest.session_description}</div>
-        </div>
-        """, unsafe_allow_html=True)
-
-        # 渲染材料列表
-        for i, m in enumerate(latest.materials, 1):
-            m_dict = m.to_dict() if hasattr(m, 'to_dict') else m
-            m_type = m_dict.get("type", "article")
-            type_class = f"type-{m_type}" if m_type in [
-                "article", "video", "tool", "podcast", "book", "course", "framework"
-            ] else "type-article"
-
-            st.markdown(f"""
-            <div class="material-item">
-                <div class="material-title">{i}. {m_dict.get("title", "")}</div>
-                <div class="material-desc">{m_dict.get("description", "")}</div>
-                <span class="material-type {type_class}">{m_type}</span>
-                <span style="font-size:0.75rem;color:#6B5E4F;">
-                    <a href="{m_dict.get('url', '#')}" target="_blank">
-                        {m_dict.get('url', '')[:60]}{'...' if len(m_dict.get('url', '')) > 60 else ''}
-                    </a>
-                </span>
-            </div>
-            """, unsafe_allow_html=True)
-
-        st.caption(f"📌 {len(latest.materials)} resources · ID: {latest.id}")
-    else:
+    records = storage.list_materials()
+    if not records:
         st.markdown("""
         <div class="empty-state">
             <div class="icon">📬</div>
             <div class="text">No materials yet. The first push is coming soon!</div>
         </div>
         """, unsafe_allow_html=True)
+        render_footer()
+        return
 
-    # 历史推送
-    st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
-    st.markdown('<div class="page-title" style="font-size:1.1rem;">📋 History</div>',
-                unsafe_allow_html=True)
+    # 全部推送按时间倒序展示，每条推送的内容完整可见
+    first = True
+    for r in records:
+        collection = storage.load_materials(r["id"])
+        if not collection:
+            continue
 
-    records = storage.list_materials()
-    if records:
-        for r in records[:20]:
-            session_label = "☀️ Morning" if r.get("session") == "morning" else "🌙 Evening"
-            with st.expander(
-                f"{session_label} · {r.get('pushed_at', '')[:10]} — "
-                f"{(r.get('session_description') or '')[:50]}  "
-                f"({r.get('material_count', 0)} resources)"
-            ):
-                collection = storage.load_materials(r["id"])
-                if collection:
-                    for i, m in enumerate(collection.materials, 1):
-                        m_dict = m.to_dict() if hasattr(m, 'to_dict') else m
-                        st.markdown(f"""
-                        <div class="material-item">
-                            <div class="material-title">{i}. {m_dict.get("title", "")}</div>
-                            <div class="material-desc">{m_dict.get("description", "")}</div>
-                            <span class="material-type type-{m_dict.get('type', 'article')}">
-                                {m_dict.get("type", "article")}
-                            </span>
-                            <span style="font-size:0.75rem;">
-                                <a href="{m_dict.get('url', '#')}" target="_blank">🔗 Link</a>
-                            </span>
-                        </div>
-                        """, unsafe_allow_html=True)
+        # 推送之间加分割线
+        if not first:
+            st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
+        first = False
+
+        emoji = "☀️" if collection.session == "morning" else "🌙"
+        session_label = "Morning" if collection.session == "morning" else "Evening"
+        date_str = r.get("pushed_at", "")[:10]
+
+        # 推送横幅
+        st.markdown(f"""
+        <div class="push-banner">
+            <div class="emoji">{emoji}</div>
+            <div class="header">{session_label} Edition · {date_str}</div>
+            <div class="theme">{collection.session_description}</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        # 材料列表
+        for i, m in enumerate(collection.materials, 1):
+            m_dict = m.to_dict() if hasattr(m, 'to_dict') else m
+            st.markdown(_render_material_card(m_dict, i), unsafe_allow_html=True)
+
+        st.caption(f"📌 {len(collection.materials)} resources · ID: {collection.id}")
 
     render_footer()
 

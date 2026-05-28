@@ -40,7 +40,7 @@ You may use URLs from any reputable tech/AI platform. Prioritize RECENT content 
 Return a STRICT JSON object with exactly 5 materials:
 
 {{
-  "session_description": "A one-sentence warm description of today's learning theme, in Chinese",
+  "session_description": "A one-sentence warm description of today's learning theme, in Chinese. Must mention \"5\" (the actual resource count), e.g. \"为你精选了5个...\"",
   "materials": [
     {{
       "title": "Resource title",
