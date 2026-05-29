@@ -60,10 +60,12 @@ class WebConnector:
         }
 
         def _try_request(u, **kw):
-            """请求 URL，自动尝试直连 → 代理"""
-            for p in [None, {"http": "http://127.0.0.1:4780", "https": "http://127.0.0.1:4780"}]:
+            """请求 URL，代理优先（国内直连 YouTube 会被 GFW 丢包，浪费重试时间）"""
+            proxy_cfg = {"http": "http://127.0.0.1:4780", "https": "http://127.0.0.1:4780"}
+            for p in [proxy_cfg, None]:
                 try:
-                    r = requests.get(u, headers=HEADERS, proxies=p, timeout=kw.pop("timeout", 12), **kw)
+                    timeout = kw.pop("timeout", 12) if p is not None else 5
+                    r = requests.get(u, headers=HEADERS, proxies=p, timeout=timeout, **kw)
                     if r.status_code == 200 and "caption" not in kw:
                         # 简单检查是否 bot 页面
                         if len(r.text) > 5000 and "sign in" not in r.text[:1000].lower():
@@ -170,7 +172,8 @@ class WebConnector:
             )
             from youtube_transcript_api.proxies import GenericProxyConfig
 
-            for use_pxy in [False, True]:
+            # 代理优先，国内直连 YouTube 极易超时
+            for use_pxy in [True, False]:
                 try:
                     if use_pxy:
                         cfg = GenericProxyConfig(
