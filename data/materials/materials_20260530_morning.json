@@ -1,0 +1,32 @@
+{
+  "id": "materials_20260530_morning",
+  "pushed_at": "2026-05-30T23:00:25.647752",
+  "session": "morning",
+  "session_description": "为你精选了5个最新的AI前沿动态与实用工具，助你开启高效的一天！",
+  "materials": [
+    {
+      "title": "Anthropic发布Claude 3.5 Sonnet，推理与编码能力大幅提升",
+      "description": "Claude 3.5 Sonnet在推理、编程和数学任务上取得显著进步，尤其适合构建复杂Agent工作流。该模型在多项基准测试中超越GPT-4o，值得关注。",
+      "type": "article",
+      "url": "https://docs.anthropic.com/en/docs/about-claude/models"
+    },
+    {
+      "title": "Anthropic 发布 Claude 3.5 Sonnet 和 Claude 3.5 Haiku，性能大幅提升",
+      "description": "Anthropic 推出了 Claude 3.5 系列模型，Sonnet 在编码和推理任务上表现出色，Haiku 则以低延迟为特色。作为PM，你需要评估这些模型在Agent工作流中的适用性，考虑成本与性能的平衡。",
+      "type": "article",
+      "url": "https://docs.anthropic.com/en/docs/about-claude/models"
+    },
+    {
+      "title": "Anthropic 推出 Claude 3.5 Sonnet 与 Artifacts 功能",
+      "description": "Anthropic 发布了 Claude 3.5 Sonnet 模型及全新的 Artifacts 功能，允许用户实时生成并迭代代码、文档等。这为AI Agent产品提供了更强的交互与协作能力。",
+      "type": "article",
+      "url": "https://docs.anthropic.com/en/docs/claude-3-5-sonnet"
+    },
+    {
+      "title": "Anthropic 发布 Claude 3.5 Sonnet 和 Claude 3.5 Haiku",
+      "description": "Anthropic 最新模型发布，性能大幅提升，支持200K上下文窗口，编程能力尤其突出。作为AI PM，了解前沿模型能力边界对产品设计至关重要。",
+      "type": "article",
+      "url": "https://docs.anthropic.com/en/docs/about-claude/models"
+    }
+  ]
+}
